@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace App\Component\User;
 
 use App\Entity\User;
+use DateTime;
+use DateTimeZone;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFactory
+readonly class UserFactory
 {
 
-    public function __construct(private readonly UserPasswordHasherInterface $passwordHasher)
+    public function __construct(private UserPasswordHasherInterface $passwordHasher)
     {
     }
 
@@ -24,7 +26,7 @@ class UserFactory
         string $email,
         string $password,
         string $phone,
-        \DateTime $birthDate
+        DateTime $birthDate
     ): User {
 
         $user = new User();
@@ -37,7 +39,7 @@ class UserFactory
         $user->setPassword($hashedPassword);
         $user->setPhone($phone);
         $user->setBirthDate($birthDate);
-        $user->setCreatedAt(new DatePoint(timezone: new \DateTimeZone('Asia/Tashkent')));
+        $user->setCreatedAt(new DatePoint(timezone: new DateTimeZone('Asia/Tashkent')));
 
         return $user;
     }

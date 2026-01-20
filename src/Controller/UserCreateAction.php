@@ -4,24 +4,30 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use ApiPlatform\Validator\ValidatorInterface;
 use App\Component\User\UserFactory;
+use App\Component\User\UserManager;
 use App\Entity\User;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class UserCreateAction extends AbstractController
 {
-    public function __construct(private readonly UserFactory $userFactory)
-    {
-
+    public function __construct(
+        private readonly UserFactory $userFactory,
+        private readonly UserManager $userManager,
+        private readonly ValidatorInterface $validator
+    ) {
     }
 
     /**
      * @throws \DateMalformedStringException
      */
-    #[NoReturn] public function __invoke(User $user): void
-     {
-        $this->userFactory->create(
+    #[NoReturn] public function __invoke(User $user): User
+    {
+        $this->validator->validate($user);
+
+        $setUserInfo = $this->userFactory->create(
             $user->getGivenName(),
             $user->getFamilyName(),
             $user->getEmail(),
@@ -29,7 +35,8 @@ class UserCreateAction extends AbstractController
             $user->getPhone(),
             $user->getBirthDate(),
         );
-        print_r($user);
-        exit();
-     }
+        $this->userManager->save($setUserInfo, true);
+
+        return $user;
+    }
 }

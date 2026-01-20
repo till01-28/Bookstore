@@ -88,7 +88,7 @@ class User implements PasswordAuthenticatedUserInterface
     private array $roles = ["ROLE_USER"];
 
     #[ORM\Column]
-    #[Groups(['user:write','user:read'])]
+    #[Groups(['user:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int
