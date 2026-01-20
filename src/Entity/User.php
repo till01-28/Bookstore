@@ -14,6 +14,7 @@ use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -24,6 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             uriTemplate: 'users/createUser',
             controller: UserCreateAction::class,
+            validate: false,
             name: 'createUser',
         ),
         new Get(),
@@ -40,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     'phone' => 'start',
 ] )]
 #[ApiFilter(OrderFilter::class, properties: ['id'])]
-class User
+class User implements PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
