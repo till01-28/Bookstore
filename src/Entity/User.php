@@ -9,7 +9,9 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Component\User\UserInfoDto;
 use App\Controller\UserCreateAction;
+use App\Controller\UserInfoDtoAction;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -29,6 +31,12 @@ use Symfony\Component\Validator\Constraints as Assert;
             name: 'createUser',
         ),
         new Get(),
+        new Post(
+            uriTemplate: 'users/userInfo',
+            controller: UserInfoDtoAction::class,
+            input: UserInfoDto::class,
+            name: 'userInfo'
+        )
     ],
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write']],
