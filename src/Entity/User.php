@@ -52,12 +52,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[UniqueEntity('email', message: 'This email already exists!')]
 #[ApiFilter(SearchFilter::class, properties: [
-    'id'=> 'exact',
-    'email'=> 'partial',
+    'id' => 'exact',
+    'email' => 'partial',
     'phone' => 'start',
-] )]
+])]
 #[ApiFilter(OrderFilter::class, properties: ['id'])]
-    class User implements PasswordAuthenticatedUserInterface, UserInterface
+class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -66,36 +66,56 @@ use Symfony\Component\Validator\Constraints as Assert;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'This field should not be blank.')]
-    #[Assert\Length(min:2,minMessage: 'Given name should be at least {{ limit }} characters long.')]
-    #[Groups(['user:write','user:read'])]
+    #[Assert\Length(min: 2, minMessage: 'Given name should be at least {{ limit }} characters long.')]
+    #[Groups(['user:write', 'user:read'])]
+    #[Assert\Regex(
+        pattern: '/^[a-z0-9A-Z]{2,10}$/',
+        message: 'Given name should contain only letters and at least 2 characters long'
+    )]
     private ?string $givenName = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'This field should not be blank')]
-    #[Assert\Length(min:2, minMessage: 'Family name should be at least {{ limit }} characters long.}}')]
-    #[Groups(['user:write','user:read'])]
+    #[Assert\Length(min: 2, minMessage: 'Family name should be at least {{ limit }} characters long.}}')]
+    #[Groups(['user:write', 'user:read'])]
+    #[Assert\Regex(
+        pattern: '/^[a-z0-9A-Z]{2,10}$/',
+        message: 'Given name should contain only letters and at least 2 characters long'
+    )]
     private ?string $familyName = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'This field should not be blank')]
     #[Assert\Email(message: 'Invalid email address, please provide a valid email address.')]
-    #[Groups(['user:write','user:read'])]
+    #[Groups(['user:write', 'user:read'])]
+    #[Assert\Regex(
+        pattern: '/^[^\s@]+@[^\s@]+\.[^\s@]{2,4}$/',
+        message: 'Invalid email address, please provide a valid email address.'
+    )]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'This field should not be blank')]
-    #[Assert\Length(min:8, minMessage: 'Password should be at least {{ limit }} characters long.')]
+    #[Assert\Length(min: 8, minMessage: 'Password should be at least {{ limit }} characters long.')]
     #[Groups(['user:write'])]
+    #[Assert\Regex(
+        pattern: '/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#(){}[\]^+=._-]).{8,}$/',
+        message: 'Password should contain at least one uppercase, one lowercase, one digit, one special character and 8 characters long.'
+    )]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank(message: 'This field should not be blank')]
-    #[Assert\Length(min:12,minMessage: 'Phone number should be at least {{ limit }} characters long.')]
-    #[Groups(['user:write','user:read'])]
+    #[Assert\Length(min: 12, minMessage: 'Phone number should be at least {{ limit }} characters long.')]
+    #[Groups(['user:write', 'user:read'])]
+    #[Assert\Regex(
+        pattern: '/^(?=.*[+])(?=.*[0-9]){12}$/',
+        message: 'Phone number should be at least 12 characters long with +998 in the beginning'
+    )]
     private ?string $phone = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['user:write','user:read'])]
+    #[Groups(['user:write', 'user:read'])]
     private ?\DateTime $birthDate = null;
 
     #[ORM\Column]
@@ -131,18 +151,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     public function setFamilyName(string $familyName): static
     {
         $this->familyName = $familyName;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
 
         return $this;
     }
@@ -215,5 +223,17 @@ use Symfony\Component\Validator\Constraints as Assert;
     public function getUserIdentifier(): string
     {
         return $this->getEmail();
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
     }
 }
