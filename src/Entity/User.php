@@ -17,6 +17,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -29,6 +30,10 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: UserCreateAction::class,
             validate: false,
             name: 'createUser',
+        ),
+        new Post(
+            uriTemplate: 'users/auth',
+            name: 'auth'
         ),
         new Get(),
         new Post(
@@ -50,7 +55,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     'phone' => 'start',
 ] )]
 #[ApiFilter(OrderFilter::class, properties: ['id'])]
-class User implements PasswordAuthenticatedUserInterface
+    class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -198,5 +203,15 @@ class User implements PasswordAuthenticatedUserInterface
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->getEmail();
     }
 }
