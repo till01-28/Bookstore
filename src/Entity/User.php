@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
@@ -11,8 +12,11 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Component\User\UserInfoDto;
 use App\Controller\UserCreateAction;
+use App\Controller\UserGetMaxAgeAction;
 use App\Controller\UserInfoDtoAction;
 use App\Repository\UserRepository;
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -25,10 +29,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new GetCollection(
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('ROLE_ADMIN')"),
+        new GetCollection(
+            uriTemplate: 'users/max-age',
+            controller: UserGetMaxAgeAction::class,
+            name: 'maxAge'
         ),
         new Post(
-            uriTemplate: 'users/createUser',
+            uriTemplate: 'users/create',
             controller: UserCreateAction::class,
             validate: false,
             name: 'createUser',
@@ -43,6 +51,9 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: UserInfoDtoAction::class,
             input: UserInfoDto::class,
             name: 'userInfo'
+        ),
+        new Get(
+            security: "is_granted('ROLE_ADMIN') || object === user"
         )
     ],
     normalizationContext: ['groups' => ['user:read']],
@@ -57,11 +68,13 @@ use Symfony\Component\Validator\Constraints as Assert;
     'phone' => 'start',
 ])]
 #[ApiFilter(OrderFilter::class, properties: ['id'])]
+#[ApiFilter(DateFilter::class, properties:['createdAt'])]
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -69,7 +82,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\Length(min: 2, minMessage: 'Given name should be at least {{ limit }} characters long.')]
     #[Groups(['user:write', 'user:read'])]
     #[Assert\Regex(
-        pattern: '/^[a-z0-9A-Z]{2,10}$/',
+        pattern: '/^[a-zA-Z]{2,}$/',
         message: 'Given name should contain only letters and at least 2 characters long'
     )]
     private ?string $givenName = null;
@@ -79,8 +92,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\Length(min: 2, minMessage: 'Family name should be at least {{ limit }} characters long.}}')]
     #[Groups(['user:write', 'user:read'])]
     #[Assert\Regex(
-        pattern: '/^[a-z0-9A-Z]{2,10}$/',
-        message: 'Given name should contain only letters and at least 2 characters long'
+        pattern: '/^[a-zA-Z]{2,}$/',
+        message: 'Family name should contain only letters and at least 2 characters long'
     )]
     private ?string $familyName = null;
 
@@ -109,7 +122,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\Length(min: 12, minMessage: 'Phone number should be at least {{ limit }} characters long.')]
     #[Groups(['user:write', 'user:read'])]
     #[Assert\Regex(
-        pattern: '/^(?=.*[+])(?=.*[0-9]){12}$/',
+        pattern: '/^\+998\d{9}$/',
         message: 'Phone number should be at least 12 characters long with +998 in the beginning'
     )]
     private ?string $phone = null;
@@ -124,7 +137,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column]
     #[Groups(['user:read'])]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ? DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int
     {
@@ -179,12 +192,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
-    public function getBirthDate(): ?\DateTime
+    public function getBirthDate(): ?DateTime
     {
         return $this->birthDate;
     }
 
-    public function setBirthDate(?\DateTime $birthDate): static
+    public function setBirthDate(?DateTime $birthDate): static
     {
         $this->birthDate = $birthDate;
 
@@ -203,12 +216,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 

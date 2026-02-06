@@ -31,13 +31,13 @@ class UserRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        public function findUserByMaxAge(): int
+        {
+            $result = $this->createQueryBuilder('u')
+                ->select('MAX(u.birthDate)')
+                ->getQuery()
+                ->getOneOrNullResult();
+
+            return $result === null ? 0 : (int)$result;
+        }
 }

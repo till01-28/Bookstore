@@ -3,6 +3,14 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\Parameter;
+use App\Controller\GetBooksAction;
+use App\Controller\GetBooksByCategoryAction;
 use App\Repository\BookRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,8 +18,35 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: 'books/by-category',
+            controller: GetBooksByCategoryAction::class,
+            openapi: new Operation(
+                parameters: [
+                    new Parameter(
+                        name: 'categoryId',
+                        in: 'query',
+                        description: 'Get book by Category Id',
+                        required: true,
+                        schema: ['type'=>'integer', 'required'=>true]
+                    )
+                ]
+            ),
+            name: 'getBooksByCategory'
+        ),
+        new GetCollection(
+            uriTemplate: 'books/get-books',
+            controller: GetBooksAction::class,
+            name: 'getBooks'
+        ),
+        new Post(),
+        new Get(),
+        new Delete()
+    ],
     normalizationContext: ['groups' => ['book:read']],
-    denormalizationContext: ['groups' => ['book:write']]
+    denormalizationContext: ['groups' => ['book:write']],
+    paginationItemsPerPage: 5
 )]
 #[Groups(['book:read'])]
 class Book

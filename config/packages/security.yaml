@@ -15,7 +15,7 @@ security:
 
         # /api/users/my endpoint'iga POST orqali murojaat qilinganda - token so'ralmasin
         user_create:
-            pattern: ^/api/users/createUser$
+            pattern: ^/api/users/create$
             methods:
                 - post
             security: false
