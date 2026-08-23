@@ -1,37 +1,52 @@
-<script setup lang="ts">
+<script setup>
+defineProps({
+    thColumns: {
+        type: Array,
+        default: () => []
+    },
+    tableRows: {
+        type: Array,
+        default: () => []
+    },
+    editModalId:{
+        type: String,
+        required: true,
+    }
 
+})
 </script>
 
 <template>
-    <div class="mt-3 m-4">
-        <div class="table-responsive rounded-1">
+    <div class="container-fluid">
+        <div class="table-responsive rounded-2">
             <table class="table table-hover align-middle text-center" id="dataTable">
                 <thead>
                 <tr>
-                    <th>Foydalanuvchilar</th>
-                    <th>Email</th>
-                    <th>Parol</th>
-                    <th>So'ngi faollik</th>
+                    <th v-for="(column, index) in thColumns" v-bind:key="index">
+                        {{column}}
+                    </th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td><img src="@/assets/logo.jpg" class="rounded-circle me-2 m-2 img-table">Fathullo Olimov</td>
-                    <td>fathullolimov@gmail.com</td>
-                    <td>Freddi8_I</td>
-                    <td>5 minut oldin</td>
-                </tr>
-                <tr>
-                    <td><img src="@/assets/logo.jpg" class="rounded-circle me-2 m-2 img-table">Fathullo Olimov</td>
-                    <td>fathullolimov@gmail.com</td>
-                    <td>Freddi8_I</td>
-                    <td>5 minut oldin</td>
-                </tr>
-                <tr>
-                    <td><img src="@/assets/logo.jpg" class="rounded-circle me-2 m-2 img-table">Fathullo Olimov</td>
-                    <td>fathullolimov@gmail.com</td>
-                    <td>Freddi8_I</td>
-                    <td>5 minut oldin</td>
+                <tbody class="table_dimensions">
+                <tr v-for="row in tableRows" v-bind:key="row.id">
+                    <td><img src="@/assets/logo.jpg" class="rounded-circle me-2 m-2 img-table" alt="#">
+                        {{row.name}}
+                    </td>
+                    <td>{{row.email}}</td>
+                    <td>{{row.password}}</td>
+                    <td>{{row.lastActivityAt}}</td>
+                    <td>
+                        <i
+                        class="icon-link icon-link-hover link-success link-underline-success bi bi-pencil-fill"
+                        data-bs-toggle="modal"
+                        v-bind:data-bs-target="`#${editModalId}`"
+                        >
+                        </i>
+                    </td>
+                    <td>
+                        <i class="icon-link icon-link-hover link-danger link-underline-danger bi bi-trash-fill">
+                        </i>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -40,24 +55,5 @@
 </template>
 
 <style scoped>
-
-/* Make table columns match search bar widths */
-#dataTable {
-    table-layout: fixed;     /* ← This is the key */
-    width: 100%;
-}
-
-#dataTable th, #dataTable td {
-    width: 25%;              /* 4 equal columns */
-}
-
-#dataTable th {
-    padding: 12px 8px;
-}
-
-.img-table {
-    width: 40px;
-    height: 40px;
-}
 
 </style>

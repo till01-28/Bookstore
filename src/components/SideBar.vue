@@ -1,6 +1,6 @@
 <script setup>
 
-import {useToggleSidebar} from "@/store/toggleSidebar.js";
+import {useToggleSidebar} from "@/stores/toggleSidebar.js";
 
 const toggle = useToggleSidebar();
 
@@ -8,48 +8,54 @@ const toggle = useToggleSidebar();
 
 <template>
     <aside
-        class="d-flex flex-column bg-body-white vh-100 shadow-lg sidebar position-fixed top-0 start-0"
-        v-bind:class="{expand: toggle.isExpanded}"
+        class="d-flex flex-column bg-body-white vh-100 shadow sidebar position-fixed top-0 start-0 mobile-open"
+        v-bind:class="{'expand': toggle.isExpanded}"
     >
         <ul class="nav nav-pills flex-column">
-            <a href="#" class="nav-link py-4 border-bottom rounded-0">
+            <router-link to="/" class="nav-link py-4 border-bottom rounded-0">
                 <li class="nav-item">
-                    <i class="bi bi-house p-2 h5"></i>
+                    <i class="bi bi-house h5 p-2 text-black-50 sidebar-icon"></i>
                     <span class="brand-full">Fathullo Inc</span>
                 </li>
-            </a>
+            </router-link>
             <a href="#" class="nav-link d-flex mt-3">
                 <img class="rounded-circle img-fluid img" src="@/assets/logo.jpg" alt="#">
                 <div class="text-black-50">
-                    <span class="ms-3">Fathullo Olimov</span><br/>
-                    <span class="ms-3">fathullolimov@gmail.com</span>
+                    <span class="ms-3 text-dark">Fathullo</span><br/>
+                    <span class="ms-3 gmail">fathullolimov@gmail.com</span>
                 </div>
             </a>
-            <a href="#" class="nav-link">
+            <router-link to="/user-info" class="nav-link text-black-50">
                 <li class="nav-item">
-                    <i class="bi bi-person p-2 h5"></i>
-                    <span class="text-black-50">Add User</span>
+                    <i class="bi bi-person p-2 h5 sidebar-icon"></i>
+                    <span>Add User</span>
                 </li>
-            </a>
-            <a href="#" class="nav-link">
+            </router-link>
+            <router-link to="/company-info" class="nav-link text-black-50">
                 <li class="nav-item">
-                    <i class="bi bi-buildings p-2 h5"></i>
-                    <span class="text-black-50">Companies</span>
+                    <i class="bi bi-buildings p-2 h5 sidebar-icon"></i>
+                    <span>Companies</span>
                 </li>
-            </a>
-            <a href="#" class="nav-link">
+            </router-link>
+            <router-link to="/clients-info" class="nav-link text-black-50">
                 <li class="nav-item">
-                    <i class="bi bi-people p-2 h5"></i>
-                    <span class="text-black-50">Customers</span>
+                    <i class="bi bi-people p-2 h5 sidebar-icon"></i>
+                    <span>Customers</span>
                 </li>
-            </a>
+            </router-link>
             <hr/>
-            <a href="#" class="nav-link">
+            <a href="#" class="nav-link text-black-50">
                 <li class="nav-item">
-                    <i class="bi bi-gear p-2 h5"></i>
-                    <span class="text-black-50">Settings</span>
+                    <i class="bi bi-gear p-2 h5 sidebar-icon"></i>
+                    <span>Settings</span>
                 </li>
             </a>
+            <router-link to="/login" class="nav-link text-black-50">
+                <li class="nav-item">
+                    <i class="bi bi-box-arrow-right p-2 h5 sidebar-icon"></i>
+                    <span>Log out</span>
+                </li>
+            </router-link>
         </ul>
         <div class="mt-auto">
             <button class="nav-link btn btn-link p-3 text-decoration-none" id="toggleSidebar" @click="toggle.toggleSidebar()">
@@ -62,24 +68,8 @@ const toggle = useToggleSidebar();
 
 <style scoped>
 
-.img{
-    width: 40px;
-    height: 40px;
-}
-.sidebar {
-    width: 70px;
-    z-index: 1030;
+.sidebar .router-link-active .sidebar-icon {
+    color: #0d6efd !important;
 }
 
-.sidebar.expand {
-    width: 300px;
-}
-
-.sidebar span {
-    display: none;
-}
-
-.sidebar.expand span {
-    display: inline;
-}
 </style>
