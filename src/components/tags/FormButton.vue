@@ -13,7 +13,7 @@ defineProps({
 
 <template>
     <button class="btn btn-primary" type="button" id="login">
-        <span>{{text}}</span>
+        <span class="m-3">{{text}}</span>
         <span v-if="loading" class="spinner-border spinner-border-sm text-light"></span>
     </button>
 </template>

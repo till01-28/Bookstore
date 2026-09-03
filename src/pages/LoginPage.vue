@@ -2,7 +2,7 @@
 import FormButton from "@/components/tags/FormButton.vue";
 import FormInput from "@/components/tags/FormInput.vue";
 import {reactive,ref} from "vue";
-import {useAuthorization} from "@/stores/authorization.js";
+import {useAuthorization} from "@/stores/authorization/authorization.js";
 import {useRouter} from "vue-router";
 
 let isLoading = ref(false);

@@ -1,5 +1,5 @@
 <script setup>
-import {useToggleSidebar} from "@/stores/toggleSidebar.js";
+import {useToggleSidebar} from "@/stores/sidebar/toggleSidebar.js";
 import FormButton from "@/components/tags/FormButton.vue";
 const toggle = useToggleSidebar();
 

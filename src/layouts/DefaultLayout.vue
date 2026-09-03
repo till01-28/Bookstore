@@ -1,7 +1,7 @@
 <script setup>
 import SideBar from "@/components/SideBar.vue";
 
-import {useToggleSidebar} from "@/stores/toggleSidebar.js";
+import {useToggleSidebar} from "@/stores/sidebar/toggleSidebar.js";
 
 const toggle = useToggleSidebar();
 

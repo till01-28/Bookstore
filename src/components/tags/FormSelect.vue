@@ -1,5 +1,7 @@
 <script setup>
 
+import {useFetchCompanies} from "@/stores/company/getCompanies.js";
+
 defineProps({
     labelName: {
         type: String,
@@ -16,12 +18,10 @@ defineProps({
     required:{
         type: Boolean,
         default: false
-    },
-    placeholder: {
-        type: String,
-        default: "Ish joini tanlang"
     }
+
 })
+
 </script>
 
 <template>
@@ -30,10 +30,12 @@ defineProps({
             <i v-if="required" class="bi bi-asterisk asterisk"></i>
         </label>
 
-        <select v-bind:id="propsId" class="form-select text-secondary">
-            <option value="" disabled selected> {{ placeholder }}</option>
-            <option selected v-for="option in options" v-bind:key="option.id" v-bind:value="option.id">
-                {{ option.name}}
+        <select v-bind:id="propsId" class="form-select text-dark">
+            <option
+                v-for="option in options"
+                v-bind:key="option.id"
+                v-bind:value="option.id">
+                {{option.name}}
             </option>
         </select>
     </div>
