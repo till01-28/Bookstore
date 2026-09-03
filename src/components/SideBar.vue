@@ -1,7 +1,14 @@
 <script setup>
+import {useRouter} from "vue-router";
 
-import {useToggleSidebar} from "@/stores/toggleSidebar.js";
+const router = useRouter()
 
+function logOut(){
+    localStorage.removeItem('token');
+    router.push('/login')
+}
+
+import {useToggleSidebar} from "@/stores/sidebar/toggleSidebar.js";
 const toggle = useToggleSidebar();
 
 </script>
@@ -44,13 +51,13 @@ const toggle = useToggleSidebar();
                 </li>
             </router-link>
             <hr/>
-            <a href="#" class="nav-link text-black-50">
+            <router-link to="/settings" class="nav-link text-black-50">
                 <li class="nav-item">
                     <i class="bi bi-gear p-2 h5 sidebar-icon"></i>
                     <span>Settings</span>
                 </li>
-            </a>
-            <router-link to="/login" class="nav-link text-black-50">
+            </router-link>
+            <router-link @click="logOut()" to="/login" class="nav-link text-black-50">
                 <li class="nav-item">
                     <i class="bi bi-box-arrow-right p-2 h5 sidebar-icon"></i>
                     <span>Log out</span>
