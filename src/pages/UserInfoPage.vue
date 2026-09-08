@@ -15,6 +15,8 @@ import FormInput from "@/components/tags/FormInput.vue";
 import FormButton from "@/components/tags/FormButton.vue";
 import {useChangeUser} from "@/stores/users/changeUser.js";
 import {useDeleteUser} from "@/stores/users/deleteUsers.js";
+import {useSearchUsers} from "@/stores/users/useSearchUsers.js";
+import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
 
 
 const host = import.meta.env.VITE_API_DOMEN;
@@ -30,6 +32,7 @@ let userAdd = reactive({
     email: '',
     password: ''
 })
+
 const {selectImage, file} = useImageFile()
 function create() {
     useAddFile().addFile(file.value)
@@ -41,6 +44,34 @@ function create() {
         .then(() => {
             useGetUsers().getUsers()
         })
+
+
+    const addModalElement = document.getElementById('addUser');
+    const addModal = bootstrap.Modal.getInstance(addModalElement);
+
+    if (addModal) {
+        addModalElement.addEventListener('hidden.bs.modal', () =>
+        {
+            showSuccessModal();
+            },
+            {once: true}
+        );
+        addModal.hide();
+    }
+    else {
+        showSuccessModal();
+    }
+}
+
+function showSuccessModal() {
+    const element = document.getElementById('userAdded');
+    const modal = bootstrap.Modal.getOrCreateInstance(element);
+
+    modal.show();
+
+    setTimeout(() => {
+        modal.hide();
+    }, 2000);
 }
 
 // *********************************************************************************************************************
@@ -78,19 +109,28 @@ function change(){
         })
 }
 
+//**********************************************************************************************************************
+const selectedUserId = ref(null);
+
+function confirmDelete(id) {
+    selectedUserId.value = id;
+}
 function remove(id){
     useDeleteUser().deleteUser(id)
         .then(() => {
             useGetUsers().getUsers()
+        })
+        .catch(() => {
+            console.log('ERROR, delete failed')
         })
 }
 
 // *********************************************************************************************************************
 const searches = [
     {
-        id: 'name',
-        label: 'Ism',
-        placeholder: 'Ism buyicha qidirish'
+        id: 'familyName',
+        label: 'Familiya',
+        placeholder: 'Familiya buyicha qidirish'
     },
     {
         id: 'email',
@@ -103,13 +143,29 @@ const searches = [
         placeholder: 'Parol buyicha qidirish'
     },
     {
-        id: 'activity',
+        id: 'lastActivityAt',
         label: 'So\'ngi faollik',
         placeholder: 'So\'ngi faollikni qidirish'
     }
 ]
 
 const {selectedSearch, visibleSearches} = useSearchFilter(searches)
+
+const searchStore = useSearchUsers();
+function searchUser(searchParams) {
+    searchStore.searchUsers(
+        searchParams,
+        'users/getCollectionOfUsers',
+    )
+        .then((res) => {
+            useGetUsers().userState.users = res.data.member;
+        })
+        .catch(() => {
+            console.log('ERROR, search is failed');
+        });
+}
+//*********************************************************************************************************************
+// Table modifications
 
 const thUserColumns = [
     'Foydalanuvchilar',
@@ -120,6 +176,48 @@ const thUserColumns = [
     '',
 ]
 
+function formatLastActivity(date) {
+    if (!date) {
+        return 'Hech qachon';
+    }
+
+    const activityDate = new Date(date);
+    const now = new Date();
+
+    const diff = now - activityDate;
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor( days / 30);
+
+    if (seconds < 60) {
+        return 'Hozirgina';
+    }
+
+    if (minutes < 60) {
+        return `${minutes} daqiqa oldin`;
+    }
+
+    if (hours < 24) {
+        return `${hours} soat oldin`;
+    }
+
+    if (days < 30) {
+        return `${days} kun oldin`;
+    }
+
+    if (months < 12) {
+        return `${months} oy oldin`;
+    }
+
+    return activityDate.toLocaleDateString('uz-UZ', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+}
 </script>
 
 <template>
@@ -133,14 +231,17 @@ const thUserColumns = [
                 entity-name="Foydalanuvchilar:"
             />
             <div class="d-flex justify-content-between align-items-center mb-3 gap-3 search-container">
-                <FormSearches v-bind:searches="visibleSearches"/>
+                <FormSearches
+                    v-bind:searches="visibleSearches"
+                    @search="searchUser"
+                />
             </div>
         </div>
         <div class="container-fluid">
             <div class="table-responsive rounded-2">
-                <table class="table table-hover align-middle text-center" id="dataTable">
-                    <FormTable v-bind:th-columns="thUserColumns"/>
-                    <tbody class="table_dimensions">
+                <table class="table table-hover align-middle text-start" id="dataTable">
+                    <FormTable v-bind:th-columns="thUserColumns" class="text-center"/>
+                    <tbody>
                     <tr
                         v-for="user in users"
                         v-bind:key="user.id">
@@ -155,13 +256,20 @@ const thUserColumns = [
                             {{user.givenName}}
                         </td>
                         <td>{{user.email}}</td>
-                        <td>{{user.password}}</td>
-                        <td>{{user.lastActivityAt}}</td>
+                        <td>{{user.password.substring(0,15)}}</td>
+                        <td>{{formatLastActivity(user.lastActivityAt)}}</td>
                         <td>
-                           <FormEditPen edit-modal-id="editUser" @click="select(user)"/>
+                           <FormEditPen
+                               edit-modal-id="editUser"
+                               @click="select(user)"
+                           />
                         </td>
                         <td>
-                            <FormDeleteTrash edit-modal-id="deleteUser" @click="remove(user.id)"/>
+                            <FormDeleteTrash
+                              @click="confirmDelete(user.id)"
+                              data-bs-toggle="modal"
+                              data-bs-target="#confirm"
+                            />
                         </td>
                     </tr>
                     </tbody>
@@ -222,10 +330,11 @@ const thUserColumns = [
                 </div>
                 <div class="modal-footer d-flex justify-content-center align-items-center border-0">
                     <FormButton
+                        text="Qo'shish"
+                        data-bs-target="#userAdded"
+                        data-bs-toggle="modal"
                         @click="create"
                         v-bind:loading="isLoading"
-                        text="Qo'shish"
-                        data-bs-dismiss="modal"
                     />
                     <FormButton
                         text="Yopish"
@@ -239,7 +348,7 @@ const thUserColumns = [
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
                 <div class="modal-header text-center ">
-                    <h5 class="modal-title">Malumotlarni o'zgartiring</h5>
+                    <h5 class="modal-title ms-3">Malumotlarni o'zgartiring</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -276,13 +385,6 @@ const thUserColumns = [
                                 placeholder="12345678"
                                 v-bind:required="true"
                             />
-                            <FormInput
-                                @change="selectImage($event)"
-                                props-id="editFile"
-                                label-name="Rasmni almashtiring"
-                                input-type="file"
-                                v-bind:required="true"
-                            />
                         </div>
                     </form>
                 </div>
@@ -300,8 +402,38 @@ const thUserColumns = [
             </div>
         </div>
     </div>
+    <div class="modal fade" id="confirm" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-0 border-0">
+                <div class="d-flex justify-content-around align-items-center m-3">
+                    <span class="h5">Rostan ham o'chirilsinmi ?</span>
+                    <div>
+                        <FormButton
+                            type="button"
+                            text="Ha"
+                            class="btn btn-danger rounded-0 px-3 mx-3"
+                            @click="remove(selectedUserId)"
+                            data-bs-dismiss="modal"/>
+                        <FormButton
+                            type="button"
+                            text="Yo'q"
+                            class="btn btn-success rounded-0 px-2"
+                            data-bs-dismiss="modal"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <FormNotificationModal/>
 </template>
 
-<style scoped>
+<style>
+.modal-backdrop.show {
+    opacity: 0.1;
+}
 
+.modal-content {
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.18);
+}
 </style>
