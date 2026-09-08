@@ -1,10 +1,30 @@
 <script setup>
+import {reactive} from "vue";
+
 defineProps({
     searches: {
         type: Array,
         default: () => []
     },
 })
+
+const emit = defineEmits(['search']);
+
+const searchValues = reactive({});
+
+let timeout;
+
+function handleSearch(search) {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+
+        emit('search', {
+            field: search.id,
+            value: searchValues[search.id] || ''
+        })
+    }, 500);
+}
 </script>
 
 <template>
@@ -20,8 +40,11 @@ defineProps({
         </span>
 
         <input
-            type="text" class="form-control border-0 rounded-0 shadow-none"
-               v-bind:placeholder="search.placeholder"
+            v-model="searchValues[search.id]"
+            type="text"
+            class="form-control border-0 rounded-0 shadow-none"
+            v-bind:placeholder="search.placeholder"
+            @input="handleSearch(search)"
         />
     </div>
 </template>
