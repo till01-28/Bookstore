@@ -156,7 +156,7 @@ const thClientColumns = [
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
                 <div class="modal-header text-center ">
-                    <h5 class="modal-title">Malumotlarni o'zgartiring</h5>
+                    <h5 class="modal-title ms-3">Malumotlarni o'zgartiring</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -179,12 +179,6 @@ const thClientColumns = [
                                 v-bind:options="companies"
                                 props-id="company"
                                 label-name="Ish joyi"
-                                v-bind:required="true"
-                            />
-                            <FormInput
-                                props-id="file"
-                                label-name="Rasm tanlang"
-                                input-type="file"
                                 v-bind:required="true"
                             />
                         </div>

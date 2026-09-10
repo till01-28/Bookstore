@@ -17,6 +17,8 @@ import {useChangeUser} from "@/stores/users/changeUser.js";
 import {useDeleteUser} from "@/stores/users/deleteUsers.js";
 import {useSearchUsers} from "@/stores/users/useSearchUsers.js";
 import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
+import {Modal} from 'bootstrap';
+
 
 
 const host = import.meta.env.VITE_API_DOMEN;
@@ -33,45 +35,35 @@ let userAdd = reactive({
     password: ''
 })
 
+function showNotification() {
+    const modalElement = document.getElementById('userAdded');
+    const modalInstance = new Modal(modalElement);
+
+    modalInstance.show();
+
+    setTimeout(() => {
+        modalInstance.hide();
+    }, 3000);
+
+}
+
 const {selectImage, file} = useImageFile()
 function create() {
     useAddFile().addFile(file.value)
         .then((res) => {
             userAdd.image = res.data['@id'];
-
             return useCreateUser().createUser(userAdd);
         })
         .then(() => {
-            useGetUsers().getUsers()
+            useGetUsers().getUsers();
+
+            userAdd.givenName = '';
+            userAdd.familyName = '';
+            userAdd.email = '';
+            userAdd.password = '';
+
+            showNotification();
         })
-
-
-    const addModalElement = document.getElementById('addUser');
-    const addModal = bootstrap.Modal.getInstance(addModalElement);
-
-    if (addModal) {
-        addModalElement.addEventListener('hidden.bs.modal', () =>
-        {
-            showSuccessModal();
-            },
-            {once: true}
-        );
-        addModal.hide();
-    }
-    else {
-        showSuccessModal();
-    }
-}
-
-function showSuccessModal() {
-    const element = document.getElementById('userAdded');
-    const modal = bootstrap.Modal.getOrCreateInstance(element);
-
-    modal.show();
-
-    setTimeout(() => {
-        modal.hide();
-    }, 2000);
 }
 
 // *********************************************************************************************************************
@@ -82,8 +74,7 @@ let userEdit = reactive({
     givenName: '',
     familyName: '',
     email: '',
-    password: '',
-    image: file.value
+    password: ''
 })
 
 function select(user) {
@@ -92,7 +83,6 @@ function select(user) {
     userEdit.familyName = user.familyName;
     userEdit.email = user.email;
     userEdit.password = user.password;
-    userEdit.image = user.image;
 }
 
 function change(){
@@ -102,10 +92,14 @@ function change(){
             givenName: userEdit.givenName,
             email: userEdit.email,
             password: userEdit.password,
-            image: userEdit.image,
         })
         .then(() => {
-            useGetUsers().getUsers()
+            useGetUsers().getUsers();
+
+            userEdit.givenName = '';
+            userEdit.familyName = '';
+            userEdit.email = '';
+            userEdit.password = '';
         })
 }
 
@@ -119,9 +113,6 @@ function remove(id){
     useDeleteUser().deleteUser(id)
         .then(() => {
             useGetUsers().getUsers()
-        })
-        .catch(() => {
-            console.log('ERROR, delete failed')
         })
 }
 
@@ -218,6 +209,8 @@ function formatLastActivity(date) {
         year: 'numeric'
     });
 }
+
+
 </script>
 
 <template>
@@ -240,7 +233,7 @@ function formatLastActivity(date) {
         <div class="container-fluid">
             <div class="table-responsive rounded-2">
                 <table class="table table-hover align-middle text-start" id="dataTable">
-                    <FormTable v-bind:th-columns="thUserColumns" class="text-center"/>
+                    <FormTable v-bind:th-columns="thUserColumns"/>
                     <tbody>
                     <tr
                         v-for="user in users"
@@ -256,7 +249,7 @@ function formatLastActivity(date) {
                             {{user.givenName}}
                         </td>
                         <td>{{user.email}}</td>
-                        <td>{{user.password.substring(0,15)}}</td>
+                        <td>{{user.password.substring(7,20)}}</td>
                         <td>{{formatLastActivity(user.lastActivityAt)}}</td>
                         <td>
                            <FormEditPen
@@ -268,7 +261,7 @@ function formatLastActivity(date) {
                             <FormDeleteTrash
                               @click="confirmDelete(user.id)"
                               data-bs-toggle="modal"
-                              data-bs-target="#confirm"
+                              data-bs-target="#confirmDeleteUser"
                             />
                         </td>
                     </tr>
@@ -331,10 +324,9 @@ function formatLastActivity(date) {
                 <div class="modal-footer d-flex justify-content-center align-items-center border-0">
                     <FormButton
                         text="Qo'shish"
-                        data-bs-target="#userAdded"
-                        data-bs-toggle="modal"
                         @click="create"
                         v-bind:loading="isLoading"
+                        data-bs-dismiss="modal"
                     />
                     <FormButton
                         text="Yopish"
@@ -402,7 +394,7 @@ function formatLastActivity(date) {
             </div>
         </div>
     </div>
-    <div class="modal fade" id="confirm" tabindex="-1">
+    <div class="modal fade" id="confirmDeleteUser" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content rounded-0 border-0">
                 <div class="d-flex justify-content-around align-items-center m-3">
@@ -424,7 +416,7 @@ function formatLastActivity(date) {
             </div>
         </div>
     </div>
-    <FormNotificationModal/>
+    <FormNotificationModal modal-id="userAdded" text="Foydalanuvchi muaffaqiyatli qushildi !"/>
 </template>
 
 <style>
