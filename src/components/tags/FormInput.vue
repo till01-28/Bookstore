@@ -16,6 +16,10 @@ defineProps({
     required:{
         type: Boolean,
         default: false
+    },
+    modelValue: {
+        type: String,
+        default: ''
     }
 })
 
@@ -31,6 +35,7 @@ defineEmits(["update:modelValue"])
             v-bind:id="propsId"
             v-bind:type="inputType"
             v-bind:placeholder="placeholder"
+            v-bind:value="modelValue"
             class="form-control"/>
     </div>
 </template>
