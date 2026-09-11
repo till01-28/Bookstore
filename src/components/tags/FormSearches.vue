@@ -5,7 +5,7 @@ defineProps({
     searches: {
         type: Array,
         default: () => []
-    },
+    }
 })
 
 const emit = defineEmits(['search']);
@@ -31,15 +31,22 @@ function handleSearch(search) {
     <div
         v-for="search in searches"
         v-bind:key="search.id"
-        class="input-group shadow-sm search-box"
-    >
+        class="input-group shadow-sm search-box text-dark">
 
-        <span
-            class="input-group-text rounded-0 border-0 bg-white">
+        <span class="input-group-text rounded-0 border-0 bg-white">
             <i class="bi bi-search ms-2"></i>
         </span>
 
         <input
+            v-if="search.type === 'date'"
+            v-model="searchValues[search.id]"
+            type="date"
+            class="form-control border-0 rounded-0 shadow-none"
+            @change="handleSearch(search)"
+        />
+
+        <input
+            v-else
             v-model="searchValues[search.id]"
             type="text"
             class="form-control border-0 rounded-0 shadow-none"
@@ -50,5 +57,4 @@ function handleSearch(search) {
 </template>
 
 <style scoped>
-
 </style>

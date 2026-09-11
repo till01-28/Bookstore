@@ -5,7 +5,7 @@ import FormFilter from "@/components/tags/FormFilter.vue";
 import FormTable from "@/components/tags/FormTable.vue";
 import FormEditPen from "@/components/tags/FormEditPen.vue";
 import {useGetUsers} from "@/stores/users/getUsers.js";
-import {computed, reactive, ref} from "vue";
+import {computed, reactive, ref, watch} from "vue";
 import {useSearchFilter} from "@/stores/searchFilter/getSearchFilter.js";
 import {useAddFile} from "@/stores/mediaObject/addFile.js";
 import {useCreateUser} from "@/stores/users/postUsers.js";
@@ -136,7 +136,7 @@ const searches = [
     {
         id: 'lastActivityAt',
         label: 'So\'ngi faollik',
-        placeholder: 'So\'ngi faollikni qidirish'
+        type: 'date',
     }
 ]
 
@@ -183,32 +183,40 @@ function formatLastActivity(date) {
     const days = Math.floor(hours / 24);
     const months = Math.floor( days / 30);
 
+    const time = activityDate.toLocaleTimeString('uz-UZ', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+
     if (seconds < 60) {
-        return 'Hozirgina';
+        return `Hozirgina ${time}`;
     }
 
     if (minutes < 60) {
-        return `${minutes} daqiqa oldin`;
+        return `${minutes} daqiqa oldin ${time}`;
     }
 
     if (hours < 24) {
-        return `${hours} soat oldin`;
+        return `${hours} soat oldin ${time}`;
     }
 
     if (days < 30) {
-        return `${days} kun oldin`;
+        return `${days} kun oldin ${time}`;
     }
 
     if (months < 12) {
-        return `${months} oy oldin`;
+        return `${months} oy oldin ${time}`;
     }
 
-    return activityDate.toLocaleDateString('uz-UZ', {
+    return `${activityDate.toLocaleDateString('uz-UZ', {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
-    });
+    })} ${time}`;
 }
+
+
 
 
 </script>
