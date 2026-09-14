@@ -1,7 +1,5 @@
 <script setup>
 
-import {useFetchCompanies} from "@/stores/company/getCompanies.js";
-
 defineProps({
     labelName: {
         type: String,
@@ -18,9 +16,14 @@ defineProps({
     required:{
         type: Boolean,
         default: false
-    }
+    },
+    modelValue: {
+        type: String,
+        default: ''
+    },
 
 })
+const emit = defineEmits(['update:modelValue']);
 
 </script>
 
@@ -30,11 +33,16 @@ defineProps({
             <i v-if="required" class="bi bi-asterisk asterisk"></i>
         </label>
 
-        <select v-bind:id="propsId" class="form-select text-dark">
+        <select
+            v-bind:id="propsId"
+            class="form-select text-dark"
+            v-bind:value="modelValue"
+            @change="emit('update:modelValue', $event.target.value)"
+        >
             <option
                 v-for="option in options"
                 v-bind:key="option.id"
-                v-bind:value="option.id">
+                v-bind:value="'/api/companies/' + option.id">
                 {{option.name}}
             </option>
         </select>

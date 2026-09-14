@@ -5,13 +5,18 @@ import FormFilter from "@/components/tags/FormFilter.vue";
 import FormTable from "@/components/tags/FormTable.vue";
 import FormEditPen from "@/components/tags/FormEditPen.vue";
 import {useGetClients} from "@/stores/clients/getClients.js";
-import {computed} from "vue";
+import {computed, reactive, ref} from "vue";
 import {useSearchFilter} from "@/stores/searchFilter/getSearchFilter.js";
 import FormInput from "@/components/tags/FormInput.vue";
 import FormButton from "@/components/tags/FormButton.vue";
 import FormSelect from "@/components/tags/FormSelect.vue";
 import {useFetchCompanies} from "@/stores/company/getCompanies.js";
 import FormDeleteTrash from "@/components/tags/FormDeleteTrash.vue";
+import {useImageFile} from "@/stores/addFile/imageFile.js";
+import {useAddFile} from "@/stores/mediaObject/addFile.js";
+import {useCreateClients} from "@/stores/clients/postClients.js";
+import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
+import {Modal} from "bootstrap";
 
 const host = import.meta.env.VITE_API_DOMEN
 useGetClients().getClients();
@@ -19,6 +24,45 @@ const clients = computed( () => useGetClients().clientState.clients);
 
 useFetchCompanies().getCompanies();
 const companies = computed(() => useFetchCompanies().companyState.companies);
+//**********************************************************************************************************************
+
+let isLoading = ref(false);
+let clientAdd = reactive({
+    name: '',
+    email: '',
+    password: '',
+    company: ''
+})
+
+function showNotification() {
+    const modalElement = document.getElementById('clientAdded');
+    const modalInstance = new Modal(modalElement);
+
+    modalInstance.show();
+
+    setTimeout(() => {
+        modalInstance.hide()
+    }, 3000);
+}
+
+const {selectImage, file} = useImageFile();
+function create() {
+    useAddFile().addFile(file.value)
+        .then((res) =>{
+            clientAdd.image = res.data['@id'];
+            return useCreateClients().createClient(clientAdd);
+        })
+        .then(() => {
+            useGetClients().getClients();
+
+            clientAdd.name = '';
+            clientAdd.email = '';
+            clientAdd.password = '';
+            clientAdd.company = '';
+
+            showNotification();
+        })
+}
 //**********************************************************************************************************************
 
 const searches = [
@@ -118,6 +162,7 @@ const thClientColumns = [
                     <form>
                         <div>
                             <FormInput
+                                v-model="clientAdd.name"
                                 props-id="name"
                                 label-name="To'liq Ism"
                                 input-type="name"
@@ -125,19 +170,30 @@ const thClientColumns = [
                                 v-bind:required="true"
                             />
                             <FormInput
+                                v-model="clientAdd.email"
                                 props-id="email"
                                 label-name="Email"
                                 input-type="email"
                                 placeholder="fathullolimov@gmail.com"
                                 v-bind:required="true"
                             />
+                            <FormInput
+                                 v-model="clientAdd.password"
+                                 props-id="password"
+                                 label-name="Password"
+                                 input-type="text"
+                                 placeholder="12345678"
+                                 v-bind:required="true"
+                            />
                             <FormSelect
+                                v-model="clientAdd.company"
                                 v-bind:options="companies"
                                 props-id="company"
                                 label-name="Ish joyi"
                                 v-bind:required="true"
                             />
                             <FormInput
+                                @change="selectImage($event)"
                                 props-id="file"
                                 label-name="Rasm tanlang"
                                 input-type="file"
@@ -149,6 +205,8 @@ const thClientColumns = [
                 <div class="modal-footer d-flex justify-content-center align-items-center border-0">
                     <FormButton
                         text="Qo'shish"
+                        @click="create"
+                        v-bind:loading="isLoading"
                         data-bs-dismiss="modal"
                     />
                     <FormButton
@@ -204,6 +262,7 @@ const thClientColumns = [
             </div>
         </div>
     </div>
+    <FormNotificationModal modal-id="clientAdded" text="Foydalanuvchi muaffaqiyatli qushildi !"/>
 </template>
 
 <style>
