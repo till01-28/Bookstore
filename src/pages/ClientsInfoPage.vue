@@ -13,12 +13,13 @@ import FormSelect from "@/components/tags/FormSelect.vue";
 import {useFetchCompanies} from "@/stores/company/getCompanies.js";
 import FormDeleteTrash from "@/components/tags/FormDeleteTrash.vue";
 
-useGetClients().getClients()
-const clients = computed( () => useGetClients().clientState.clients)
+const host = import.meta.env.VITE_API_DOMEN
+useGetClients().getClients();
+const clients = computed( () => useGetClients().clientState.clients);
 
-useFetchCompanies().getCompanies()
-const companies = computed(() => useFetchCompanies().companyState.companies)
-
+useFetchCompanies().getCompanies();
+const companies = computed(() => useFetchCompanies().companyState.companies);
+//**********************************************************************************************************************
 
 const searches = [
     {
@@ -78,16 +79,22 @@ const thClientColumns = [
         </div>
         <div class="container-fluid">
             <div class="table-responsive rounded-2">
-                <table class="table table-hover align-middle text-center" id="dataTable">
+                <table class="table table-hover align-middle text-start" id="dataTable">
                     <FormTable v-bind:th-columns="thClientColumns"/>
                     <tbody class="table_dimensions">
                     <tr v-for="client in clients" v-bind:key="client.id">
-                        <td><img src="@/assets/logo.jpg" class="rounded-circle me-2 m-2 img-table" alt="#">
+                        <td>
+                            <img
+                                v-if="client.image"
+                                v-bind:src="host + client.image.contentUrl"
+                                class="rounded-circle me-2 m-2 img-table"
+                                alt="image"
+                            >
                             {{client.name}}
                         </td>
                         <td>{{client.email}}</td>
-                        <td>{{client.password}}</td>
-                        <td>{{client.clientsCompanyName}}</td>
+                        <td>{{client.password.substring(7,20)}}</td>
+                        <td>{{client.company.name}}</td>
                         <td>{{client.lastActivityAt}}</td>
                         <td>
                             <FormEditPen edit-modal-id="editClient"/>
@@ -199,5 +206,5 @@ const thClientColumns = [
     </div>
 </template>
 
-<style scoped>
+<style>
 </style>

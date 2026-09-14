@@ -136,7 +136,7 @@ const searches = [
     {
         id: 'lastActivityAt',
         label: 'So\'ngi faollik',
-        type: 'date',
+        type: 'date'
     }
 ]
 
@@ -215,10 +215,6 @@ function formatLastActivity(date) {
         year: 'numeric'
     })} ${time}`;
 }
-
-
-
-
 </script>
 
 <template>
@@ -428,12 +424,4 @@ function formatLastActivity(date) {
 </template>
 
 <style>
-.modal-backdrop.show {
-    opacity: 0.1;
-}
-
-.modal-content {
-    background-color: #ffffff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.18);
-}
 </style>

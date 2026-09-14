@@ -108,3 +108,12 @@ th {
     margin-top: 6px;
 }
 
+.modal-backdrop.show {
+    opacity: 0.1;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.18);
+}
+
