@@ -18,6 +18,7 @@ import {useChangeCompany} from "@/stores/company/changeCompanies.js";
 import {useDeleteCompanies} from "@/stores/company/deleteCompanies.js";
 import {Modal} from "bootstrap";
 import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
+import {useSearchCompanies} from "@/stores/company/useSearchCompanies.js";
 
 const host = import.meta.env.VITE_API_DOMEN
 useFetchCompanies().getCompanies()
@@ -122,13 +123,31 @@ const searches = [
         placeholder: 'Parol qidirish'
     },
     {
-        id: 'activity',
+        id: 'lastActivityAt',
         label: 'So\'ngi faollik',
-        placeholder: 'So\'ngi faollikni qidirish'
+        type: 'date',
     }
 ]
 //**********************************************************************************************************************
 const {selectedSearch, visibleSearches} = useSearchFilter(searches)
+
+const searchCompany = useSearchCompanies();
+
+function searchCompanyInfo(searchParams) {
+    searchCompany.searchCompanies(
+        searchParams, '/companies',
+    )
+        .then((res) => {
+            useFetchCompanies().companyState.companies = res.data.member;
+        })
+        .catch(() => {
+            console.log("ERROR, search is Failed")
+        })
+}
+
+//**********************************************************************************************************************
+
+// Table modifications
 
 const thCompanyColumns = [
     'Kompaniyalar',
@@ -155,31 +174,37 @@ function formatLastActivity(date) {
     const days = Math.floor(hours / 24);
     const months = Math.floor( days / 30);
 
+    const time = activityDate.toLocaleTimeString('uz-UZ', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+
     if (seconds < 60) {
-        return 'Hozirgina';
+        return `Hozirgina ${time}`;
     }
 
     if (minutes < 60) {
-        return `${minutes} daqiqa oldin`;
+        return `${minutes} daqiqa oldin ${time}`;
     }
 
     if (hours < 24) {
-        return `${hours} soat oldin`;
+        return `${hours} soat oldin ${time}`;
     }
 
     if (days < 30) {
-        return `${days} kun oldin`;
+        return `${days} kun oldin ${time}`;
     }
 
     if (months < 12) {
-        return `${months} oy oldin`;
+        return `${months} oy oldin ${time}`;
     }
 
-    return activityDate.toLocaleDateString('uz-UZ', {
+    return `${activityDate.toLocaleDateString('uz-UZ', {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
-    });
+    })} ${time}`;
 }
 </script>
 
@@ -194,7 +219,10 @@ function formatLastActivity(date) {
                 entity-name="Kompaniyalar:"
             />
             <div class="d-flex justify-content-between align-items-center mb-3 gap-3 search-container">
-                <FormSearches v-bind:searches="visibleSearches"/>
+                <FormSearches
+                    v-bind:searches="visibleSearches"
+                    @search="searchCompanyInfo"
+                />
             </div>
         </div>
         <div class="container-fluid">
@@ -367,6 +395,5 @@ function formatLastActivity(date) {
     <FormNotificationModal modal-id="companyAdded" text="Kompaniya muaffaqiyatli qushildi !"/>
 </template>
 
-<style scoped>
-
+<style>
 </style>

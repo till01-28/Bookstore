@@ -13,7 +13,5 @@ export const useSearchUsers = defineStore('searchUsers', () => {
         });
     }
 
-    return {
-        searchUsers,
-    };
+    return {searchUsers};
 });
