@@ -19,6 +19,7 @@ import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
 import {Modal} from "bootstrap";
 import {useChangeClients} from "@/stores/clients/changeClients.js";
 import {useDeleteClient} from "@/stores/clients/deleteClients.js";
+import {useSearchClients} from "@/stores/clients/useSearchClients.js";
 
 const host = import.meta.env.VITE_API_DOMEN
 useGetClients().getClients();
@@ -147,6 +148,18 @@ const searches = [
 ]
 const {selectedSearch, visibleSearches} = useSearchFilter(searches)
 
+const searchStore = useSearchClients();
+
+function searchClient(searchParams) {
+    searchStore.searchClients(searchParams, 'clients/getClients',)
+        .then((res) => {
+            useGetClients().clientState.clients = res.data.member;
+        })
+        .catch(() => {
+            console.log('ERROR, search is failed');
+        })
+}
+// *********************************************************************************************************************
 const thClientColumns = [
     'Mijozlar',
     'Email',
@@ -171,6 +184,8 @@ const thClientColumns = [
             <div class="d-flex justify-content-between align-items-center mb-3 gap-3 search-container">
                 <FormSearches
                     v-bind:searches="visibleSearches"
+
+                    @search="searchClient"
                 />
             </div>
         </div>
