@@ -18,6 +18,7 @@ import {useCreateClients} from "@/stores/clients/postClients.js";
 import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
 import {Modal} from "bootstrap";
 import {useChangeClients} from "@/stores/clients/changeClients.js";
+import {useDeleteClient} from "@/stores/clients/deleteClients.js";
 
 const host = import.meta.env.VITE_API_DOMEN
 useGetClients().getClients();
@@ -103,7 +104,18 @@ function change() {
 }
 //**********************************************************************************************************************
 // DELETE FUNCTION
+const selectedClientId = ref(null);
 
+function confirmDelete(id) {
+    selectedClientId.value = id;
+}
+
+function remove(id){
+    useDeleteClient().deleteClient(id)
+        .then(() => {
+            useGetClients().getClients();
+        })
+}
 
 //**********************************************************************************************************************
 const searches = [
@@ -188,7 +200,12 @@ const thClientColumns = [
                             />
                         </td>
                         <td>
-                           <FormDeleteTrash edit-modal-id="editClient"/>
+                           <FormDeleteTrash
+                               edit-modal-id="editClient"
+                               @click="confirmDelete(client.id)"
+                               data-bs-toggle="modal"
+                               data-bs-target="#confirmDeleteClient"
+                           />
                         </td>
                     </tr>
                     </tbody>
@@ -314,6 +331,28 @@ const thClientColumns = [
                         text="Yopish"
                         data-bs-dismiss="modal"
                     />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="confirmDeleteClient" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-0 border-0">
+                <div class="d-flex justify-content-around align-items-center m-3">
+                    <span class="h5">Rostan ham o'chirilsinmi ?</span>
+                    <div>
+                        <FormButton
+                            type="button"
+                            text="Ha"
+                            class="btn btn-danger rounded-0 px-3 mx-3"
+                            @click="remove(selectedClientId)"
+                            data-bs-dismiss="modal"/>
+                        <FormButton
+                            type="button"
+                            text="Yo'q"
+                            class="btn btn-success rounded-0 px-2"
+                            data-bs-dismiss="modal"/>
+                    </div>
                 </div>
             </div>
         </div>
