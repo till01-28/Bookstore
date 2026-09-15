@@ -141,9 +141,9 @@ const searches = [
         placeholder: 'Ishlash joini qidirish'
     },
     {
-        id:'activity',
+        id:'lastActivityAt',
         label: 'So\'ngi faollik',
-        placeholder: "So'ngi faollikni qidirish"
+        type: 'date'
     }
 ]
 const {selectedSearch, visibleSearches} = useSearchFilter(searches)
