@@ -17,6 +17,7 @@ import {useAddFile} from "@/stores/mediaObject/addFile.js";
 import {useCreateClients} from "@/stores/clients/postClients.js";
 import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
 import {Modal} from "bootstrap";
+import {useChangeClients} from "@/stores/clients/changeClients.js";
 
 const host = import.meta.env.VITE_API_DOMEN
 useGetClients().getClients();
@@ -25,6 +26,7 @@ const clients = computed( () => useGetClients().clientState.clients);
 useFetchCompanies().getCompanies();
 const companies = computed(() => useFetchCompanies().companyState.companies);
 //**********************************************************************************************************************
+// CLIENT ADD BUTTON
 
 let isLoading = ref(false);
 let clientAdd = reactive({
@@ -64,7 +66,46 @@ function create() {
         })
 }
 //**********************************************************************************************************************
+// CLIENT EDIT FUNCTION
 
+let clientEdit = reactive({
+    id: '',
+    name: '',
+    email: '',
+    password: '',
+    company: '',
+})
+
+function select(client) {
+    clientEdit.id = client.id;
+    clientEdit.name = client.name;
+    clientEdit.email = client.email;
+    clientEdit.password = client.password;
+    clientEdit.company = client.company;
+}
+
+function change() {
+    useChangeClients().changeClient(
+        clientEdit.id, {
+            name: clientEdit.name,
+            email: clientEdit.email,
+            password: clientEdit.password,
+            company: clientEdit.company
+        })
+        .then(() => {
+            useGetClients().getClients();
+
+            clientEdit.name = '';
+            clientEdit.email = '';
+            clientEdit.password = '';
+            clientEdit.company = '';
+        })
+}
+//**********************************************************************************************************************
+// DELETE FUNCTION
+
+
+//**********************************************************************************************************************
 const searches = [
     {
         id: 'ism',
@@ -141,7 +182,10 @@ const thClientColumns = [
                         <td>{{client.company.name}}</td>
                         <td>{{client.lastActivityAt}}</td>
                         <td>
-                            <FormEditPen edit-modal-id="editClient"/>
+                            <FormEditPen
+                                edit-modal-id="editClient"
+                                @click="select(client)"
+                            />
                         </td>
                         <td>
                            <FormDeleteTrash edit-modal-id="editClient"/>
@@ -227,6 +271,7 @@ const thClientColumns = [
                     <form>
                         <div>
                             <FormInput
+                                v-model="clientEdit.name"
                                 props-id="name"
                                 label-name="To'liq Ism"
                                 input-type="name"
@@ -234,13 +279,23 @@ const thClientColumns = [
                                 v-bind:required="true"
                             />
                             <FormInput
+                                v-model="clientEdit.email"
                                 props-id="email"
                                 label-name="Email"
                                 input-type="email"
                                 placeholder="fathullolimov@gmail.com"
                                 v-bind:required="true"
                             />
+                            <FormInput
+                                v-model="clientEdit.password"
+                                props-id="password"
+                                label-name="Password"
+                                input-type="text"
+                                placeholder="12345678"
+                                v-bind:required="true"
+                            />
                             <FormSelect
+                                v-model="clientEdit.company"
                                 v-bind:options="companies"
                                 props-id="company"
                                 label-name="Ish joyi"
@@ -251,7 +306,8 @@ const thClientColumns = [
                 </div>
                 <div class="modal-footer d-flex justify-content-center align-items-center border-0">
                     <FormButton
-                        text="Qo'shish"
+                        text="O'zgartirish"
+                        @click="change()"
                         data-bs-dismiss="modal"
                     />
                     <FormButton
