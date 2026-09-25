@@ -1,32 +1,140 @@
 <script setup>
 import FormInput from "@/components/tags/FormInput.vue";
 import FormButton from "@/components/tags/FormButton.vue";
+import {useRegisterStore} from "@/stores/registration/registration.js";
+import {reactive, ref} from "vue";
+import {useImageFile} from "@/stores/addFile/imageFile.js";
+import {useAddFile} from "@/stores/mediaObject/addFile.js";
+import {useRouter} from "vue-router";
+import {Modal} from "bootstrap";
+import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
+
+let isLoading = ref(false);
+const registerStore = useRegisterStore();
+const router = useRouter();
+const fileInputKey = ref(0);
+
+const {selectImage,file} = useImageFile();
+
+const form = reactive({
+    givenName: '',
+    familyName: '',
+    email: '',
+    plainPassword: ''
+});
+
+function showNotification() {
+    const modalElement = document.getElementById('userRegistered');
+    const modalInstance = new Modal(modalElement);
+
+    modalInstance.show();
+
+    setTimeout(() => {
+        modalInstance.hide();
+        router.push('/login')
+    }, 3000);
+
+}
+
+function register() {
+    isLoading.value = true;
+    useAddFile().addFile(file.value)
+        .then((res) => {
+            form.image = res.data['@id'];
+            return registerStore.register(form);
+        })
+        .then(() => {
+            showNotification();
+            console.log('Navigation succeeded');
+        })
+        .catch((error) => {
+            console.error('Registration failed:', error);
+        })
+        .finally(() =>{
+            isLoading.value = false;
+
+            form.givenName = '';
+            form.familyName = '';
+            form.email = '';
+            form.plainPassword = '';
+            file.value = null;
+            fileInputKey.value++;
+
+        })
+}
 </script>
 
 <template>
     <div class="row vh-100 justify-content-center align-items-center">
         <div class="col-12 col-sm-8 col-md-8 col-xl-4">
-            <form class="border rounded">
+            <form @submit.prevent="register" class="border rounded sign_up_font">
                 <h1 class="text-center mt-3">Sign Up Form</h1>
                     <div class="m-3">
-                        <FormInput props-id="givenName" label-name="Given Name" input-type="givenName"/>
-                        <FormInput props-id="familyName" label-name="Family Name" input-type="familyName"/>
-                        <FormInput props-id="email" label-name="Email" input-type="email"/>
-                        <FormInput props-id="password" label-name="Create password" input-type="password"/>
-                        <FormInput props-id="password" label-name="Enter password again" input-type="password"/>
+                        <FormInput
+                            v-model="form.givenName"
+                            props-id="givenName"
+                            label-name="Given Name"
+                            input-type="givenName"
+                            placeholder="John"
+                            v-bind:required="true"
+                        />
+                        <FormInput
+                            v-model="form.familyName"
+                            props-id="familyName"
+                            label-name="Family Name"
+                            input-type="familyName"
+                            placeholder="Doe"
+                            v-bind:required="true"
+                        />
+                        <FormInput
+                            v-model="form.email"
+                            props-id="email"
+                            label-name="Email"
+                            input-type="email"
+                            placeholder="exmaple@gmail.com"
+                            v-bind:required="true"
+                        />
+                        <FormInput
+                            v-model="form.plainPassword"
+                            props-id="password"
+                            placeholder="12345678"
+                            label-name="Create password"
+                            input-type="password"
+                            v-bind:required="true"
+                        />
+                        <FormInput
+                            @change="selectImage($event)"
+                            props-id="addFile"
+                            label-name="Rasm tanlang"
+                            input-type="file"
+                            v-bind:key="fileInputKey"
+                            v-model="file"
+                        />
                     </div>
                 <div class="m-3 d-flex justify-content-between align-items-center">
                     <span
                         class="">If you have an account.
                         Click <router-link to="/login" class="text-decoration-none">Log In</router-link>
                     </span>
-                    <FormButton text="Sign Up" type="button" class="btn btn-primary"/>
+                    <FormButton
+                        @click="register()"
+                        text="Sign Up"
+                        type="button"
+                        v-bind:loading="isLoading"
+                    />
                 </div>
             </form>
         </div>
     </div>
+    <FormNotificationModal modal-id="userRegistered" text="Foydalanuvchi muaffaqiyatli yaratildi !"/>
 </template>
 
 <style scoped>
+.sign_up_font{
+    font-family: "Poppins", sans-serif !important;
+    font-size: 14px;
+    color: #444150 !important;
+    font-weight: 400 !important;
+}
 
 </style>
