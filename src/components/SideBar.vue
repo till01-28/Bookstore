@@ -19,54 +19,57 @@ const toggle = useToggleSidebar();
         v-bind:class="{'expand': toggle.isExpanded}"
     >
         <ul class="nav nav-pills flex-column">
-            <router-link to="/" class="nav-link py-4 border-bottom rounded-0">
                 <li class="nav-item">
-                    <i class="bi bi-house h5 p-2 text-black-50 sidebar-icon"></i>
-                    <span class="brand-full">Fathullo Inc</span>
+                    <router-link to="/" class="nav-link border-bottom rounded-0 brand-height">
+                        <span class="brand-full">Fathullo Inc</span> <br/>
+                    </router-link>
                 </li>
-            </router-link>
             <a href="#" class="nav-link d-flex mt-3">
-                <img class="rounded-circle img-fluid img" src="@/assets/logo.jpg" alt="#">
-                <div class="text-black-50">
-                    <span class="ms-3 text-dark">Fathullo</span><br/>
-                    <span class="ms-3 gmail">fathullolimov@gmail.com</span>
+                <img class="rounded-circle img-fluid img" src="@/assets/imgboy_1.jpg" alt="#">
+                <div>
+                    <span class="ms-3">Fathullo</span><br/>
+                    <span class="ms-3 gmail_size">fathullolimov@gmail.com</span>
                 </div>
             </a>
-            <router-link to="/user-info" class="nav-link text-black-50">
-                <li class="nav-item">
-                    <i class="bi bi-person p-2 h5 sidebar-icon"></i>
-                    <span>Add User</span>
-                </li>
-            </router-link>
-            <router-link to="/company-info" class="nav-link text-black-50">
-                <li class="nav-item">
-                    <i class="bi bi-buildings p-2 h5 sidebar-icon"></i>
+            <li class="nav-item">
+                <router-link class="nav-link" to="/user-info">
+                    <i class="bi bi-person-plus p-2 sidebar-icon icon_size"></i>
+                    <span>Users</span>
+                 </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link class="nav-link" to="/company-info">
+                    <i class="bi bi-buildings p-2 sidebar-icon icon_size"></i>
                     <span>Companies</span>
+                </router-link>
                 </li>
-            </router-link>
-            <router-link to="/clients-info" class="nav-link text-black-50">
-                <li class="nav-item">
-                    <i class="bi bi-people p-2 h5 sidebar-icon"></i>
+            <li class="nav-item">
+                 <router-link class="nav-link" to="/clients-info">
+                    <i class="bi bi-people p-2 sidebar-icon icon_size"></i>
                     <span>Customers</span>
-                </li>
-            </router-link>
+                 </router-link>
+            </li>
             <hr/>
-            <router-link to="/settings" class="nav-link text-black-50">
-                <li class="nav-item">
-                    <i class="bi bi-gear p-2 h5 sidebar-icon"></i>
+            <li class="nav-item">
+                <router-link class="nav-link" to="/settings">
+                    <i class="bi bi-gear p-2 sidebar-icon icon_size"></i>
                     <span>Settings</span>
-                </li>
-            </router-link>
-            <router-link @click="logOut()" to="/login" class="nav-link text-black-50">
-                <li class="nav-item">
-                    <i class="bi bi-box-arrow-right p-2 h5 sidebar-icon"></i>
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link @click="logOut()" class="nav-link" to="/login">
+                    <i class="bi bi-box-arrow-right p-2 sidebar-icon icon_size"></i>
                     <span>Log out</span>
-                </li>
-            </router-link>
+                </router-link>
+            </li>
         </ul>
         <div class="mt-auto">
-            <button class="nav-link btn btn-link p-3 text-decoration-none" id="toggleSidebar" @click="toggle.toggleSidebar()">
-                <i class="bi bi-arrows-collapse-vertical p-2 h5"></i>
+            <button
+                class="nav-link btn btn-link p-3 text-decoration-none"
+                id="toggleSidebar"
+                @click="toggle.toggleSidebar()"
+            >
+                <i class="bi bi-arrows-collapse-vertical p-2 icon_size"></i>
                 <span>Collapse</span>
             </button>
         </div>
@@ -75,8 +78,55 @@ const toggle = useToggleSidebar();
 
 <style scoped>
 
-.sidebar .router-link-active .sidebar-icon {
-    color: #0d6efd !important;
+.gmail_size {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    color: #707683 !important;
+}
+
+.brand-full {
+    font-size: 18px !important;
+    color: #109CF1 !important;
+    font-weight: 600 !important;
+    font-family: Open Sans,ui-sans-serif;
+    letter-spacing: 1% !important;
+    margin-top: 17px !important;
+    margin-left: 24px !important;
+}
+
+.icon_size{
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 1px !important;
+    color: #98A5B6;
+}
+span{
+    font-size: 13px !important;
+    color: #334D6E !important;
+    font-weight: 500 !important;
+    height: 100%;
+    letter-spacing: 1%;
+}
+
+aside .nav-link {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+aside .nav-link.router-link-active {
+    color: #109CF1 !important;
+}
+
+aside .nav-link.router-link-active .sidebar-icon {
+    color: #109CF1 !important;
+}
+
+aside .nav-link{
+    font-family: "Poppins", sans-serif;
+}
+
+.brand-height {
+    height: 60px !important;
 }
 
 </style>

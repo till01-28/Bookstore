@@ -26,8 +26,8 @@ function auth() {
 
 <template>
     <div class="row vh-100 justify-content-center align-items-center">
-        <div class="col-12 col-sm-8 col-md-6 col-xl-4">
-            <form>
+        <div class="col-12 col-sm-8 col-md-6 col-xl-4 ">
+            <form @submit.prevent="auth" class="login_font">
                 <h1 class="text-center mt-3">Log In</h1>
                 <FormInput v-model="authorization.email" props-id="email" label-name="Email" input-type="email"/>
                 <FormInput v-model="authorization.password" props-id="password" label-name="Password" input-type="text"/>
@@ -37,7 +37,7 @@ function auth() {
                         class="text-nowrap"> Please click
                         <router-link to="/register" class="text-decoration-none"> Sign Up.</router-link>
                     </span>
-                    <FormButton @click="auth()" v-bind:loading="isLoading" text="Login"/>
+                    <FormButton @click="auth()" text="Login" v-bind:loading="isLoading"/>
                 </div>
             </form>
         </div>
@@ -45,5 +45,10 @@ function auth() {
 </template>
 
 <style scoped>
-
+.login_font{
+    font-family: "Poppins", sans-serif !important;
+    font-size: 14px;
+    color: #444150 !important;
+    font-weight: 400 !important;
+}
 </style>

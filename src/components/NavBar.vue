@@ -26,16 +26,17 @@ defineProps({
             </button>
 
             <FormButton
-                class="btn btn-primary ms-auto me-3"
+                class="ms-auto me-3"
                 type="button"
                 data-bs-toggle="modal"
                 v-bind:data-bs-target="`#${modalId}`"
-                v-bind:text="`${buttonName} Qo'shish`"
+                v-bind:text="`${buttonName} qo'shish`"
             />
     </nav>
 </template>
 
 <style scoped>
-
-
+.navbar_dimensions {
+    height: 61px;
+}
 </style>
