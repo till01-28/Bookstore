@@ -20,7 +20,6 @@ import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
 import {Modal} from 'bootstrap';
 
 
-
 const host = import.meta.env.VITE_API_DOMEN;
 useGetUsers().getUsers()
 const users = computed( () => useGetUsers().userState.users)
@@ -32,7 +31,7 @@ let userAdd = reactive({
     givenName: '',
     familyName: '',
     email: '',
-    password: ''
+    plainPassword: ''
 })
 
 function showNotification() {
@@ -60,7 +59,7 @@ function create() {
             userAdd.givenName = '';
             userAdd.familyName = '';
             userAdd.email = '';
-            userAdd.password = '';
+            userAdd.plainPassword = '';
 
             showNotification();
         })
@@ -74,7 +73,7 @@ let userEdit = reactive({
     givenName: '',
     familyName: '',
     email: '',
-    password: ''
+    plainPassword: ''
 })
 
 function select(user) {
@@ -82,7 +81,7 @@ function select(user) {
     userEdit.givenName = user.givenName;
     userEdit.familyName = user.familyName;
     userEdit.email = user.email;
-    userEdit.password = user.password;
+    userEdit.plainPassword = user.plainPassword;
 }
 
 function change(){
@@ -91,7 +90,7 @@ function change(){
             familyName: userEdit.familyName,
             givenName: userEdit.givenName,
             email: userEdit.email,
-            password: userEdit.password,
+            plainPassword: userEdit.plainPassword,
         })
         .then(() => {
             useGetUsers().getUsers();
@@ -99,11 +98,13 @@ function change(){
             userEdit.givenName = '';
             userEdit.familyName = '';
             userEdit.email = '';
-            userEdit.password = '';
+            userEdit.plainPassword = '';
         })
 }
 
 //**********************************************************************************************************************
+// DELETE FUNCTION
+
 const selectedUserId = ref(null);
 
 function confirmDelete(id) {
@@ -117,6 +118,7 @@ function remove(id){
 }
 
 // *********************************************************************************************************************
+// SEARCHBAR FUNCTION
 const searches = [
     {
         id: 'familyName',
@@ -135,7 +137,7 @@ const searches = [
     },
     {
         id: 'lastActivityAt',
-        label: 'So\'ngi faollik',
+        label: 'Activity',
         type: 'date'
     }
 ]
@@ -156,7 +158,7 @@ function searchUser(searchParams) {
         });
 }
 //*********************************************************************************************************************
-// Table modifications
+// TABLE MODIFICATIONS
 
 const thUserColumns = [
     'Foydalanuvchilar',
@@ -226,6 +228,7 @@ function formatLastActivity(date) {
                 v-bind:searches="searches"
                 v-bind:show-entity="true"
                 entity-name="Foydalanuvchilar:"
+                class="user-filter"
             />
             <div class="d-flex justify-content-between align-items-center mb-3 gap-3 search-container">
                 <FormSearches
@@ -239,10 +242,8 @@ function formatLastActivity(date) {
                 <table class="table table-hover align-middle text-start" id="dataTable">
                     <FormTable v-bind:th-columns="thUserColumns"/>
                     <tbody>
-                    <tr
-                        v-for="user in users"
-                        v-bind:key="user.id">
-                        <td>
+                    <tr v-for="user in users" v-bind:key="user.id" class="del-edit-icons">
+                        <td class="user-tbNames-font">
                             <img
                                 v-if="user.image"
                                 v-bind:src="host + user.image.contentUrl"
@@ -252,16 +253,16 @@ function formatLastActivity(date) {
                             {{user.familyName}}
                             {{user.givenName}}
                         </td>
-                        <td>{{user.email}}</td>
-                        <td>{{user.password.substring(7,20)}}</td>
-                        <td>{{formatLastActivity(user.lastActivityAt)}}</td>
-                        <td>
+                        <td class="user-tbCol-font">{{user.email}}</td>
+                        <td class="user-tbCol-font">{{user.plainPassword}}</td>
+                        <td class="user-tbCol-font">{{formatLastActivity(user.lastActivityAt)}}</td>
+                        <td class="pen">
                            <FormEditPen
                                edit-modal-id="editUser"
                                @click="select(user)"
                            />
                         </td>
-                        <td>
+                        <td class="trashCan">
                             <FormDeleteTrash
                               @click="confirmDelete(user.id)"
                               data-bs-toggle="modal"
@@ -277,8 +278,8 @@ function formatLastActivity(date) {
     <div class="modal fade" id="addUser" tabindex="-1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
-                <div class="modal-header text-center ">
-                    <h5 class="modal-title">Foydalanuvchi malumotlarini kiriting</h5>
+                <div class="modal-header text-center">
+                    <h5 class="modal-title modal-font-name">Foydalanuvchi malumotlarini kiriting</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -308,7 +309,7 @@ function formatLastActivity(date) {
                                 v-bind:required="true"
                             />
                             <FormInput
-                                v-model="userAdd.password"
+                                v-model="userAdd.plainPassword"
                                 props-id="addPassword"
                                 label-name="Password"
                                 input-type="text"
@@ -331,10 +332,14 @@ function formatLastActivity(date) {
                         @click="create"
                         v-bind:loading="isLoading"
                         data-bs-dismiss="modal"
+                        class="button-user-edit"
+                        v-bind:font-weight="400"
                     />
                     <FormButton
                         text="Yopish"
                         data-bs-dismiss="modal"
+                        class="button-user-edit"
+                        v-bind:font-weight="400"
                     />
                 </div>
             </div>
@@ -343,8 +348,8 @@ function formatLastActivity(date) {
     <div class="modal fade" id="editUser" tabindex="-1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
-                <div class="modal-header text-center ">
-                    <h5 class="modal-title ms-3">Malumotlarni o'zgartiring</h5>
+                <div class="modal-header text-center">
+                    <h5 class="modal-title modal-font-name">Malumotlarni o'zgartiring</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -374,7 +379,7 @@ function formatLastActivity(date) {
                                 v-bind:required="true"
                             />
                             <FormInput
-                                v-model="userEdit.password"
+                                v-model="userEdit.plainPassword"
                                 props-id="editPassword"
                                 label-name="Password"
                                 input-type="password"
@@ -387,12 +392,16 @@ function formatLastActivity(date) {
                 <div class="modal-footer d-flex justify-content-center align-items-center border-0">
                     <FormButton
                         @click="change()"
-                        text="O'zgartiish"
+                        text="Qo'shish"
                         data-bs-dismiss="modal"
+                        class="button-user-edit"
+                        v-bind:font-weight="400"
                     />
                     <FormButton
                         text="Yopish"
                         data-bs-dismiss="modal"
+                        class="button-user-edit"
+                        v-bind:font-weight="400"
                     />
                 </div>
             </div>
@@ -402,26 +411,84 @@ function formatLastActivity(date) {
         <div class="modal-dialog">
             <div class="modal-content rounded-0 border-0">
                 <div class="d-flex justify-content-around align-items-center m-3">
-                    <span class="h5">Rostan ham o'chirilsinmi ?</span>
+                    <span class="user-del-name">Rostan ham o'chirilsinmi ?</span>
                     <div>
                         <FormButton
                             type="button"
                             text="Ha"
-                            class="btn btn-danger rounded-0 px-3 mx-3"
+                            class="user-del-btn user-del-red me-4 del-icon-pos"
                             @click="remove(selectedUserId)"
-                            data-bs-dismiss="modal"/>
+                            data-bs-dismiss="modal"
+                            v-bind:font-weight="400"
+                        />
                         <FormButton
                             type="button"
                             text="Yo'q"
-                            class="btn btn-success rounded-0 px-2"
-                            data-bs-dismiss="modal"/>
+                            class="user-del-btn user-del-green del-icon-pos"
+                            data-bs-dismiss="modal"
+                            v-bind:font-weight="400"
+                        />
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <FormNotificationModal modal-id="userAdded" text="Foydalanuvchi muaffaqiyatli qushildi !"/>
+    <FormNotificationModal modal-id="userAdded" text="Ma'lumot muaffaqiyatli qushildi!"/>
 </template>
 
-<style>
+<style scoped>
+.user-tbCol-font {
+    font-family: "Poppins", sans-serif !important;
+    color: #707683 !important;
+    font-weight: 400 !important;
+    font-size: 13px;
+    line-height: 100% !important;
+
+}
+.user-tbNames-font {
+    font-family: "Poppins", sans-serif !important;
+    color: #323C47 !important;
+    font-size: 15px;
+    line-height: 100% !important;
+    font-weight: 500 !important;
+}
+.user-filter {
+    font-family: 'Poppins',serif !important;
+    font-weight: 400 !important;
+    font-size: 12px !important;
+    line-height: 100% !important;
+    color: #707683 !important;
+    padding: 10px 0 10px 0;
+}
+.modal-font-name {
+    font-family: "Poppins",serif !important;
+    font-weight: 600 !important;
+    line-height: 100% !important;
+    font-size: 13px !important;
+}
+.button-user-edit{
+    width: 108px !important;
+    height: 29px !important;
+    line-height: 24px !important;
+}
+
+.user-del-btn{
+    width: 94px;
+    height: 30px;
+    border-radius: 2px;
+}
+.user-del-red{
+    background-color: #F7685B;
+}
+.user-del-green{
+    background-color: #34D47E;
+}
+.user-del-name{
+    font-family: "Poppins", sans-serif !important;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 100%;
+}
+
 </style>

@@ -124,7 +124,7 @@ const searches = [
     },
     {
         id: 'lastActivityAt',
-        label: 'So\'ngi faollik',
+        label: 'Activity',
         type: 'date',
     }
 ]
@@ -217,6 +217,7 @@ function formatLastActivity(date) {
                 v-bind:show-entity="true"
                 v-bind:searches="searches"
                 entity-name="Kompaniyalar:"
+                class="company-filter"
             />
             <div class="d-flex justify-content-between align-items-center mb-3 gap-3 search-container">
                 <FormSearches
@@ -229,9 +230,9 @@ function formatLastActivity(date) {
             <div class="table-responsive rounded-2">
                 <table class="table table-hover align-middle" id="dataTable">
                     <FormTable v-bind:th-columns="thCompanyColumns"/>
-                    <tbody class="table_dimensions">
-                    <tr v-for="company in companies" v-bind:key="company.id">
-                        <td>
+                    <tbody>
+                    <tr v-for="company in companies" v-bind:key="company.id" class="del-edit-icons">
+                        <td class="company-tbNames-font">
                             <img
                                 v-if="company.image"
                                 v-bind:src="host + company.image.contentUrl"
@@ -240,16 +241,16 @@ function formatLastActivity(date) {
                             >
                             {{company.name}}
                         </td>
-                        <td>{{company.email}}</td>
-                        <td>{{company.password.substring(7,20)}}</td>
-                        <td>{{formatLastActivity(company.lastActivityAt)}}</td>
-                        <td>
+                        <td class="company-tbCol-font">{{company.email}}</td>
+                        <td class="company-tbCol-font">{{company.password}}</td>
+                        <td class="company-tbCol-font">{{formatLastActivity(company.lastActivityAt)}}</td>
+                        <td class="pen">
                             <FormEditPen
                                 edit-modal-id="editCompany"
                                 @click="select(company)"
                             />
                         </td>
-                        <td>
+                        <td class="trashCan">
                            <FormDeleteTrash
                                @click="confirmDeleteCompany(company.id)"
                                data-bs-target="#confirmDeleteCompany"
@@ -265,8 +266,8 @@ function formatLastActivity(date) {
     <div class="modal fade" id="addCompany" tabindex="-1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
-                <div class="modal-header text-center ">
-                    <h5 class="modal-title">Kompaniya malumotlarini kiriting</h5>
+                <div class="modal-header text-center">
+                    <h5 class="modal-title modal-font-name">Kompaniya malumotlarini kiriting</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -311,10 +312,14 @@ function formatLastActivity(date) {
                         v-bind:loading="isLoading"
                         @click="create"
                         data-bs-dismiss="modal"
+                        class="button-company-edit"
+                        v-bind:font-weight="400"
                     />
                     <FormButton
                         text="Yopish"
                         data-bs-dismiss="modal"
+                        class="button-company-edit"
+                        v-bind:font-weight="400"
                     />
                 </div>
             </div>
@@ -324,7 +329,7 @@ function formatLastActivity(date) {
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
                 <div class="modal-header">
-                    <h5 class="modal-title ms-3">Malumotlarni o'zgartiring</h5>
+                    <h5 class="modal-title modal-font-name">Malumotlarni o'zgartiring</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -361,10 +366,14 @@ function formatLastActivity(date) {
                         text="Qo'shish"
                         data-bs-dismiss="modal"
                         @click="change()"
+                        class="button-company-edit"
+                        v-bind:font-weight="400"
                     />
                     <FormButton
                         text="Yopish"
                         data-bs-dismiss="modal"
+                        class="button-company-edit"
+                        v-bind:font-weight="400"
                     />
                 </div>
             </div>
@@ -374,19 +383,25 @@ function formatLastActivity(date) {
         <div class="modal-dialog">
             <div class="modal-content rounded-0 border-0">
                 <div class="d-flex justify-content-around align-items-center m-3">
-                    <span class="h5">Rostan ham o'chirilsinmi ?</span>
+                    <span class="company-del-name">Rostan ham o'chirilsinmi ?</span>
                     <div>
                         <FormButton
                             type="button"
                             text="Ha"
-                            class="btn btn-danger rounded-0 px-3 mx-3"
+                            class="company-del-btn company-del-red me-4 del-icon-pos"
                             @click="remove(selectedCompanyId)"
-                            data-bs-dismiss="modal"/>
+                            data-bs-dismiss="modal"
+                            v-bind:font-weight="400"
+
+                        />
                         <FormButton
                             type="button"
                             text="Yo'q"
-                            class="btn btn-success rounded-0 px-2"
-                            data-bs-dismiss="modal"/>
+                            class="company-del-btn company-del-green del-icon-pos"
+                            data-bs-dismiss="modal"
+                            v-bind:font-weight="400"
+                        />
+
                     </div>
                 </div>
             </div>
@@ -395,5 +410,57 @@ function formatLastActivity(date) {
     <FormNotificationModal modal-id="companyAdded" text="Kompaniya muaffaqiyatli qushildi !"/>
 </template>
 
-<style>
+<style scoped>
+.company-tbCol-font {
+    font-family: "Poppins",serif !important;
+    color: #707683 !important;
+    font-size: 13px;
+    font-weight: 400 !important;
+    line-height: 100% !important;
+}
+.company-tbNames-font {
+    font-family: "Poppins", serif !important;
+    color: #323C47 !important;
+    font-size: 15px;
+    font-weight: 500 !important;
+    line-height: 100% !important;
+}
+.company-filter {
+    font-family: "Poppins", sans-serif !important;
+    color: #707683 !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 100% !important;
+    padding: 10px 0 10px 0 !important;
+}
+.modal-font-name {
+    font-family: "Poppins",serif !important;
+    font-weight: 600 !important;
+    line-height: 100% !important;
+    font-size: 13px !important;
+}
+.button-company-edit{
+    width: 108px !important;
+    height: 29px !important;
+    line-height: 24px !important;
+}
+
+.company-del-btn{
+    width: 94px;
+    height: 30px;
+    border-radius: 2px;
+}
+.company-del-red{
+    background-color: #F7685B;
+}
+.company-del-green{
+    background-color: #34D47E;
+}
+.company-del-name{
+    font-family: "Poppins", sans-serif !important;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 100%;
+}
 </style>

@@ -6,7 +6,8 @@ export const useSearchClients = defineStore('searchClients', () => {
         const params = {
             [searchParams.field]: searchParams.value
         };
-        return client.get(endpoint,{params: params});
+        return client.get(endpoint,
+            {params: params});
         }
         return {searchClients, useSearchClients};
 })
