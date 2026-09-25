@@ -46,7 +46,7 @@ function showNotification() {
 
     setTimeout(() => {
         modalInstance.hide()
-    }, 3000);
+    }, 30000);
 }
 
 const {selectImage, file} = useImageFile();
@@ -119,9 +119,11 @@ function remove(id){
 }
 
 //**********************************************************************************************************************
+// SEARCHBAR FUNCTIONS
+
 const searches = [
     {
-        id: 'ism',
+        id: 'name',
         label: 'Mijoz Ismi',
         placeholder: 'Mijozlarni ismini qidirish'
     },
@@ -136,13 +138,13 @@ const searches = [
         placeholder: 'Parol qidirish'
     },
     {
-        id: 'company',
+        id: 'company.name',
         label: 'Company',
         placeholder: 'Ishlash joini qidirish'
     },
     {
         id:'lastActivityAt',
-        label: 'So\'ngi faollik',
+        label: 'Activity',
         type: 'date'
     }
 ]
@@ -151,7 +153,10 @@ const {selectedSearch, visibleSearches} = useSearchFilter(searches)
 const searchStore = useSearchClients();
 
 function searchClient(searchParams) {
-    searchStore.searchClients(searchParams, 'clients/getClients',)
+    searchStore.searchClients(
+        searchParams,
+        'clients/getClients'
+    )
         .then((res) => {
             useGetClients().clientState.clients = res.data.member;
         })
@@ -160,6 +165,8 @@ function searchClient(searchParams) {
         })
 }
 // *********************************************************************************************************************
+// TABLE MODIFICATIONS
+
 const thClientColumns = [
     'Mijozlar',
     'Email',
@@ -169,6 +176,55 @@ const thClientColumns = [
     '',
     '',
 ]
+function formatLastActivity(date) {
+    if (!date) {
+        return 'Hech qachon';
+    }
+
+    const activityDate = new Date(date);
+    const now = new Date();
+
+    const diff = now - activityDate;
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor( days / 30);
+
+    const time = activityDate.toLocaleTimeString('uz-UZ', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+
+    if (seconds < 60) {
+        return `Hozirgina ${time}`;
+    }
+
+    if (minutes < 60) {
+        return `${minutes} daqiqa oldin ${time}`;
+    }
+
+    if (hours < 24) {
+        return `${hours} soat oldin ${time}`;
+    }
+
+    if (days < 30) {
+        return `${days} kun oldin ${time}`;
+    }
+
+    if (months < 12) {
+        return `${months} oy oldin ${time}`;
+    }
+
+    return `${activityDate.toLocaleDateString('uz-UZ', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    })} ${time}`;
+}
+//**********************************************************************************************************************
 </script>
 
 <template>
@@ -180,22 +236,22 @@ const thClientColumns = [
                 v-bind:searches="searches"
                 v-bind:show-entity="true"
                 entity-name="Mijozlar:"
+                class="client-filter"
             />
             <div class="d-flex justify-content-between align-items-center mb-3 gap-3 search-container">
                 <FormSearches
                     v-bind:searches="visibleSearches"
-
                     @search="searchClient"
                 />
             </div>
         </div>
         <div class="container-fluid">
             <div class="table-responsive rounded-2">
-                <table class="table table-hover align-middle text-start" id="dataTable">
+                <table class="table table-hover align-middle text-start" id="dtClient">
                     <FormTable v-bind:th-columns="thClientColumns"/>
-                    <tbody class="table_dimensions">
-                    <tr v-for="client in clients" v-bind:key="client.id">
-                        <td>
+                    <tbody>
+                    <tr v-for="client in clients" v-bind:key="client.id" class="del-edit-iconsClient">
+                        <td class="client_tbNames-font">
                             <img
                                 v-if="client.image"
                                 v-bind:src="host + client.image.contentUrl"
@@ -204,17 +260,17 @@ const thClientColumns = [
                             >
                             {{client.name}}
                         </td>
-                        <td>{{client.email}}</td>
-                        <td>{{client.password.substring(7,20)}}</td>
-                        <td>{{client.company.name}}</td>
-                        <td>{{client.lastActivityAt}}</td>
-                        <td>
+                        <td class="client-tbCol-font">{{client.email}}</td>
+                        <td class="client-tbCol-font">{{client.password}}</td>
+                        <td class="client-tbCol-font">{{client.company.name}}</td>
+                        <td class="client-tbCol-font">{{formatLastActivity(client.lastActivityAt)}}</td>
+                        <td class="penClient">
                             <FormEditPen
                                 edit-modal-id="editClient"
                                 @click="select(client)"
                             />
                         </td>
-                        <td>
+                        <td class="trashCanClient">
                            <FormDeleteTrash
                                edit-modal-id="editClient"
                                @click="confirmDelete(client.id)"
@@ -231,8 +287,8 @@ const thClientColumns = [
     <div class="modal fade" id="addClient" tabindex="-1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
-                <div class="modal-header text-center ">
-                    <h5 class="modal-title">Mijoz malumotlarini kiriting</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title modal-font-name">Mijoz malumotlarini kiriting</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -284,10 +340,14 @@ const thClientColumns = [
                         @click="create"
                         v-bind:loading="isLoading"
                         data-bs-dismiss="modal"
+                        class="button-client-edit"
+                        v-bind:font-weight="400"
                     />
                     <FormButton
                         text="Yopish"
                         data-bs-dismiss="modal"
+                        class="button-client-edit"
+                        v-bind:font-weight="400"
                     />
                 </div>
             </div>
@@ -296,8 +356,8 @@ const thClientColumns = [
     <div class="modal fade" id="editClient" tabindex="-1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
-                <div class="modal-header text-center ">
-                    <h5 class="modal-title ms-3">Malumotlarni o'zgartiring</h5>
+                <div class="modal-header text-center">
+                    <h5 class="modal-title modal-font-name">Malumotlarni o'zgartiring</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -338,13 +398,17 @@ const thClientColumns = [
                 </div>
                 <div class="modal-footer d-flex justify-content-center align-items-center border-0">
                     <FormButton
-                        text="O'zgartirish"
+                        text="Qo'shish"
                         @click="change()"
                         data-bs-dismiss="modal"
+                        class="button-client-edit"
+                        v-bind:font-weight="400"
                     />
                     <FormButton
                         text="Yopish"
                         data-bs-dismiss="modal"
+                        class="button-client-edit"
+                        v-bind:font-weight="400"
                     />
                 </div>
             </div>
@@ -354,26 +418,138 @@ const thClientColumns = [
         <div class="modal-dialog">
             <div class="modal-content rounded-0 border-0">
                 <div class="d-flex justify-content-around align-items-center m-3">
-                    <span class="h5">Rostan ham o'chirilsinmi ?</span>
+                    <span class="client-del-name">Rostan ham o'chirilsinmi ?</span>
                     <div>
                         <FormButton
                             type="button"
                             text="Ha"
-                            class="btn btn-danger rounded-0 px-3 mx-3"
+                            class="client-del-btn client-del-red me-4 del-icon-pos"
                             @click="remove(selectedClientId)"
-                            data-bs-dismiss="modal"/>
+                            data-bs-dismiss="modal"
+                            v-bind:font-weight="400"
+                        />
+
                         <FormButton
                             type="button"
                             text="Yo'q"
-                            class="btn btn-success rounded-0 px-2"
-                            data-bs-dismiss="modal"/>
+                            class="client-del-btn client-del-green del-icon-pos"
+                            data-bs-dismiss="modal"
+                            v-bind:font-weight="400"
+                        />
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <FormNotificationModal modal-id="clientAdded" text="Foydalanuvchi muaffaqiyatli qushildi !"/>
+    <FormNotificationModal
+        modal-id="clientAdded"
+        text="Mijoz muaffaqiyatli qushildi !"
+        class="font-poppins_name"
+    />
 </template>
 
-<style>
+<style scoped>
+.client-tbCol-font {
+    font-family: "Poppins",serif !important;
+    color: #707683 !important;
+    font-size: 13px;
+    font-weight: 400 !important;
+    line-height: 100% !important;
+}
+.client_tbNames-font {
+    font-family: "Poppins", serif !important;
+    color: #323C47 !important;
+    font-size: 15px;
+    font-weight: 500 !important;
+    line-height: 100% !important;
+}
+.client-filter{
+    font-family: 'Poppins',serif !important;
+    font-weight: 400 !important;
+    font-size: 12px !important;
+    line-height: 100% !important;
+    color: #707683 !important;
+    padding: 10px 0 10px 0;
+}
+.modal-font-name {
+    font-family: "Poppins",serif !important;
+    font-weight: 600 !important;
+    line-height: 100% !important;
+    font-size: 13px !important;
+}
+.button-client-edit{
+    width: 108px !important;
+    height: 29px !important;
+    line-height: 24px !important;
+}
+.client-del-btn{
+    width: 94px;
+    height: 30px;
+    border-radius: 2px;
+}
+.client-del-red{
+    background-color: #F7685B;
+}
+.client-del-green{
+    background-color: #34D47E;
+}
+.client-del-name{
+    font-family: "Poppins", sans-serif !important;
+    color: #000000;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 100%;
+}
+
+.del-edit-iconsClient{
+    cursor: pointer;
+    .penClient > * {
+        display: none;
+    }
+    .trashCanClient > * {
+        display: none;
+    }
+}
+.del-edit-iconsClient:hover{
+    .penClient > * {
+        display: table-cell;
+    }
+    .trashCanClient > *{
+        display: table-cell;
+    }
+}
+
+#dtClient th:nth-child(1),
+#dtClient td:nth-child(1) {
+    width: 20%;
+}
+
+#dtClient th:nth-child(2),
+#dtClient td:nth-child(2) {
+    width: 21%;
+}
+
+#dtClient th:nth-child(3),
+#dtClient td:nth-child(3) {
+    width: 21%;
+}
+
+#dtClient th:nth-child(4),
+#dtClient td:nth-child(4) {
+    width: 20%;
+}
+
+#dtClient th:nth-child(5),
+#dtClient td:nth-child(5){
+    width: 12%;
+}
+#dtClient th:nth-child(6),
+#dtClient td:nth-child(6) {
+    width: 2%;
+}
+#dtClient th:nth-child(7),
+#dtClient td:nth-child(7) {
+    width: 2%;
+}
+
 </style>
