@@ -31,12 +31,13 @@ function auth() {
                 <h1 class="text-center mt-3">Log In</h1>
                 <FormInput v-model="authorization.email" props-id="email" label-name="Email" input-type="email"/>
                 <FormInput v-model="authorization.password" props-id="password" label-name="Password" input-type="text"/>
-                <span>Are you not signed up, yet?</span>
-                <div class="d-flex justify-content-between align-items-center">
-                    <span
-                        class="text-nowrap"> Please click
-                        <router-link to="/register" class="text-decoration-none"> Sign Up.</router-link>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        <span class="">Are you not signed up, yet?</span> <br/>
+                        <span>Please click
+                            <router-link to="/register" class="text-decoration-none"> Sign Up.</router-link>
                     </span>
+                    </div>
                     <FormButton @click="auth()" text="Login" v-bind:loading="isLoading"/>
                 </div>
             </form>
@@ -51,4 +52,5 @@ function auth() {
     color: #444150 !important;
     font-weight: 400 !important;
 }
+
 </style>
