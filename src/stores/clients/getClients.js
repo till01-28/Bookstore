@@ -13,7 +13,7 @@ export const useGetClients = defineStore('getClients', () => {
             client.get('clients/getClients'+ url)
                 .then((res) => {
                     console.log('Clients are accessed')
-                    clientState.clients = res.data.member;
+                    clientState.clients = [...res.data.member].sort((a, b) => b.id - a.id);
                     clientState.count = res.data.totalItems;
                     resolve();
                 })

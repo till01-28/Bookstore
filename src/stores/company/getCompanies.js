@@ -14,7 +14,7 @@ export const useFetchCompanies = defineStore('fetchCompanies', () => {
             client.get('companies'+ url)
                 .then((res) => {
                     console.log('Companies are accessed')
-                    companyState.companies = res.data.member;
+                    companyState.companies = [...res.data.member].sort((a, b) => b.id - a.id);
                     companyState.count = res.data.totalItems;
                     resolve();
                 })

@@ -133,7 +133,7 @@ const searches = [
         placeholder: 'Email buyicha qidirish'
     },
     {
-        id: 'password',
+        id: 'plainPassword',
         label: 'Parol',
         placeholder: 'Parol buyicha qidirish'
     },
@@ -153,7 +153,7 @@ function searchUser(searchParams) {
         'users/getCollectionOfUsers',
     )
         .then((res) => {
-            useGetUsers().userState.users = res.data.member;
+            useGetUsers().userState.users = [...res.data.member].sort((a, b) => b.id - a.id);
         })
         .catch(() => {
             console.log('ERROR, search is failed');

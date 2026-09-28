@@ -140,7 +140,7 @@ function searchCompanyInfo(searchParams) {
         searchParams, '/companies',
     )
         .then((res) => {
-            useFetchCompanies().companyState.companies = res.data.member;
+            useFetchCompanies().companyState.companies = [...res.data.member].sort((a, b) => b.id - a.id);
         })
         .catch(() => {
             console.log("ERROR, search is Failed")

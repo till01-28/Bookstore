@@ -160,7 +160,7 @@ function searchClient(searchParams) {
         'clients/getClients'
     )
         .then((res) => {
-            useGetClients().clientState.clients = res.data.member;
+            useGetClients().clientState.clients = [...res.data.member].sort((a, b) => b.id - a.id);
         })
         .catch(() => {
             console.log('ERROR, search is failed');

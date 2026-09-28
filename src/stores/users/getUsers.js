@@ -13,7 +13,7 @@ export const useGetUsers = defineStore('getUsers', () => {
             client.get('users/getCollectionOfUsers' + url)
                 .then((res) => {
                     console.log('Users are accessed')
-                    userState.users = res.data.member.sort((a,b) => b.id-a.id );
+                    userState.users = [...res.data.member].sort((a, b) => b.id - a.id);
                     userState.count = res.data.totalItems;
                     resolve();
                 })
