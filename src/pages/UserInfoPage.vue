@@ -18,6 +18,8 @@ import {useDeleteUser} from "@/stores/users/deleteUsers.js";
 import {useSearchUsers} from "@/stores/users/useSearchUsers.js";
 import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
 import {Modal} from 'bootstrap';
+import {format, isToday, differenceInMinutes, differenceInHours} from 'date-fns';
+import { uz } from 'date-fns/locale';
 
 
 const host = import.meta.env.VITE_API_DOMEN;
@@ -177,45 +179,24 @@ function formatLastActivity(date) {
     const activityDate = new Date(date);
     const now = new Date();
 
-    const diff = now - activityDate;
+    const time = format(activityDate, 'HH:mm');
 
-    const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const months = Math.floor( days / 30);
+    if (isToday(activityDate)) {
+        const minutes = differenceInMinutes(now, activityDate);
+        const hours = differenceInHours(now, activityDate);
 
-    const time = activityDate.toLocaleTimeString('uz-UZ', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    });
+        if (minutes < 1) {
+            return `Hozirgina ${time}`;
+        }
 
-    if (seconds < 60) {
-        return `Hozirgina ${time}`;
-    }
+        if (minutes < 60) {
+            return `${minutes} daqiqa oldin ${time}`;
+        }
 
-    if (minutes < 60) {
-        return `${minutes} daqiqa oldin ${time}`;
-    }
-
-    if (hours < 24) {
         return `${hours} soat oldin ${time}`;
     }
 
-    if (days < 30) {
-        return `${days} kun oldin ${time}`;
-    }
-
-    if (months < 12) {
-        return `${months} oy oldin ${time}`;
-    }
-
-    return `${activityDate.toLocaleDateString('uz-UZ', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    })} ${time}`;
+    return format(activityDate, 'dd MMM, yyyy HH:mm');
 }
 </script>
 
