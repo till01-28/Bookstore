@@ -41,7 +41,7 @@ function handleSearch(search) {
             v-if="search.type === 'date'"
             v-model="searchValues[search.id]"
             type="date"
-            class="form-control border-0 rounded-0 shadow-none searches-box-font"
+            class="form-control border-0 rounded-0 shadow-none searches-box-font searches-box-date-color"
             @change="handleSearch(search)"
         />
 
@@ -57,11 +57,17 @@ function handleSearch(search) {
 </template>
 
 <style scoped>
+
+.search-box {
+    width: 248px;
+    height: 42px;
+}
+
 .searches-box-font {
     font-family: "Poppins", serif !important;
     font-size: 12px !important;
     font-weight: 400 !important;
-    color: #90A0B7 !important;
+    color: #90A0B7;
 }
 
 .searches-box-font::placeholder {

@@ -1,7 +1,11 @@
+/* -- This code below is for background-color of the pages -- */
 .background-color {
     background-color: #F5F6F8;
     min-height: 100vh;
 }
+/* -- END -- */
+
+/* -- Code below opens and collapse the sidebar -- */
 
 .table-content {
     margin-left: 68px;
@@ -15,11 +19,6 @@
     width: calc(100% - 256px);
 }
 
-.img {
-    width: 46px;
-    height: 46px;
-}
-
 .sidebar {
     width: 68px;
     z-index: 1030;
@@ -29,15 +28,17 @@
     width: 256px;
 }
 
-.sidebar span {
+.sidebar .sidebar-text {
     display: none;
-    font-size: medium;
 }
 
-.sidebar.expand span {
+.sidebar.expand .sidebar-text {
     display: inline;
 }
 
+/* --END -- */
+
+/* --  This code below is responsible for mobile behavior of the sidebar -- */
 @media (max-width: 768px)
 {
     .sidebar {
@@ -58,7 +59,16 @@
         margin-left: 256px;
     }
 }
+/* -- END -- */
 
+/* -- This code is responsible for images of 3 entity tables -- */
+.img-table {
+    width: 35px;
+    height: 35px;
+}
+/* -- END -- */
+
+/* -- This code below is responsible for delete trash can and edit pen icons in tables -- */
 .th_5 {
     width: 10px;
 }
@@ -67,28 +77,17 @@
     width: 90px;
 }
 
-.img-table {
-    width: 35px;
-    height: 35px;
-}
+/* -- END -- */
 
-.form-select{
-    background-color: #F5F6F8;
-    color:deepskyblue;
-    font-size: 14px;
-}
-
-.search-box {
-    width: 248px;
-    height: 42px;
-}
-
+/* -- This code below is responsible for responsiveness of search boxes -- */
 @media (max-width: 1200px) {
     .search-container {
         flex-wrap: wrap;
     }
 }
+/* -- END -- */
 
+/* --This CSS code below is for asterisk components on label which means fields are mandatory to fill-- */
 .asterisk{
     color: #109CF1 !important;
     position:absolute;
@@ -96,7 +95,9 @@
     line-height: 100%;
     padding-top: 6px;
 }
+/* -- END -- */
 
+/* -- Add whiteness the modal background and centers the header text -- */
 .modal-backdrop.show {
     opacity: 0.1;
 }
@@ -109,7 +110,9 @@
 .modal-header {
     justify-content: center;
 }
+/* -- END -- */
 
+/* -- When hovered over delete trash can and edit pen icons shows and changes the cursor -- */
 .del-icon-pos{
     display: inline !important;
 }
@@ -131,7 +134,10 @@
         display: table-cell;
     }
 }
+/* -- END -- */
 
+/* -- Responsible for space that each column of table-header takes, it distributes according to the % given -- */
+/* -- Specifically for User and Company pages as they have 4 table-headers -- */
 #dataTable th:nth-child(1),
 #dataTable td:nth-child(1) {
     width: 28%;
@@ -144,7 +150,7 @@
 
 #dataTable th:nth-child(3),
 #dataTable td:nth-child(3) {
-    width: 28%;
+    width: 27%;
 }
 
 #dataTable th:nth-child(4),
@@ -153,10 +159,10 @@
 }
 
 #dataTable th:nth-child(5),
-#dataTable td:nth-child(5){
-    width: 2,5%
-}
+#dataTable td:nth-child(5),
 #dataTable th:nth-child(6),
-#dataTable td:nth-child(6) {
-    width: 2,5%;
+#dataTable td:nth-child(6)
+{
+    width: 4%;
 }
+/* -- END -- */

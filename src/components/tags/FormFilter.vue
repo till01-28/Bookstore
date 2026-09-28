@@ -52,12 +52,17 @@ defineEmits(['update:modelValue'])
 </template>
 
 <style scoped>
+
+.form-select{
+    background-color: #F5F6F8;
+    font-size: 14px;
+}
 .font-filter {
-    font-family: 'Poppins', serif !important;
-    font-weight: 400 !important;
-    font-size: 12px !important;
-    line-height: 100% !important;
-    color: #109CF1 !important;
+    font-family: 'Poppins', serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 100%;
+    color: #109CF1;
 }
 
 .form-select {
@@ -75,7 +80,7 @@ defineEmits(['update:modelValue'])
     content: "";
     position: absolute;
     right: 28px;
-    top: 44%;
+    top: 45%;
     color: #C2CFE0 !important;
 
     border-left: 3px solid transparent;
