@@ -18,7 +18,7 @@ function auth() {
     isLoading.value = true;
     useAuthorization().userAuth(authorization)
         .then(() => {
-            router.push("/");
+            router.push("/user-info");
         })
 }
 

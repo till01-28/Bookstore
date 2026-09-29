@@ -50,7 +50,7 @@ function register() {
         .catch((error) => {
             console.error('Registration failed:', error);
         })
-        .finally(() =>{
+        .finally(() => {
             isLoading.value = false;
 
             form.givenName = '';
@@ -108,7 +108,6 @@ function register() {
                             label-name="Rasm tanlang"
                             input-type="file"
                             v-bind:key="fileInputKey"
-                            v-model="file"
                         />
                     </div>
                 <div class="m-3 d-flex justify-content-between align-items-center">

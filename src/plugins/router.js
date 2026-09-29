@@ -15,19 +15,11 @@ const ifNotAuthorized = (to, from, next) => {
         next();
     }
     else {
-        next('/');
+        next('/user-info');
     }
 }
 
 const routes = [
-    {
-        path: '/',
-        component: () => import('@/pages/HomePage.vue'),
-        meta:{
-            layout: defineAsyncComponent( () => import('@/layouts/DefaultLayout.vue'))
-        },
-        beforeEnter: ifAuthorized
-    },
     {
         path: '/login',
         component: () => import('@/pages/LoginPage.vue'),

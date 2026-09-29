@@ -19,10 +19,10 @@ const toggle = useToggleSidebar();
     >
         <ul class="nav nav-pills flex-column">
                 <li class="nav-item">
-                    <router-link to="/" class="nav-link border-bottom rounded-0 brand-height">
+                    <a href="#" class="nav-link border-bottom rounded-0 brand-height">
                         <span class="brand-expanded">Fathullo Inc</span>
                         <span class="brand-collapsed">Inc</span>
-                    </router-link>
+                    </a>
                 </li>
             <a href="#" class="nav-link d-flex mt-3">
                 <img class="rounded-circle img-fluid img-sidebar" src="@/assets/imgboy_1.jpg" alt="#">
