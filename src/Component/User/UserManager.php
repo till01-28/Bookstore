@@ -7,9 +7,9 @@ namespace App\Component\User;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
-class UserManager
+readonly class UserManager
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
 
     }

@@ -27,7 +27,7 @@ class UserCreateAction extends AbstractController
     {
         $this->validator->validate($user);
 
-        $setUserInfo = $this->userFactory->create(
+        $user = $this->userFactory->create(
             $user->getGivenName(),
             $user->getFamilyName(),
             $user->getEmail(),
@@ -35,7 +35,7 @@ class UserCreateAction extends AbstractController
             $user->getPhone(),
             $user->getBirthDate(),
         );
-        $this->userManager->save($setUserInfo, true);
+        $this->userManager->save($user, true);
 
         return $user;
     }

@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class UserInfoDto
 {
      public function __construct(
-         #[Groups(['User:read','user:write'])]
+         #[Groups(['user:read','user:write'])]
          private readonly string $familyName,
          #[Groups(['user:read','user:write'])]
          private readonly bool $isMarried
