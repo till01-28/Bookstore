@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 /* -- This code below is for background-color of the pages -- */
 .background-color {
     background-color: #F5F6F8;
@@ -68,7 +69,7 @@
 }
 /* -- END -- */
 
-/* -- This code below is responsible for delete trash can and edit pen icons in tables -- */
+/* -- This code below is responsible for deleteTrashCan and editPen icons in tables -- */
 .th_5 {
     width: 10px;
 }
@@ -112,7 +113,7 @@
 }
 /* -- END -- */
 
-/* -- When hovered over delete trash can and edit pen icons shows and changes the cursor -- */
+/* -- When hovered over deleteTrashCan and editPen icons shows and changes the cursor -- */
 .del-icon-pos{
     display: inline !important;
 }
