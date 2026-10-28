@@ -1,8 +1,19 @@
 <script setup>
 import {useRouter} from "vue-router";
 import {useToggleSidebar} from "@/stores/sidebar/toggleSidebar.js";
+import {computed, onMounted} from "vue";
+import {useGetCurrentUser} from "@/stores/users/getCurrentUser.js";
 
+const host = import.meta.env.VITE_API_DOMEN;
 const router = useRouter()
+
+const userStore = useGetCurrentUser();
+const currentUser = computed(() => userStore.currentUserState.currentUser)
+
+onMounted(() => {
+    userStore.getCurrentUser();
+})
+
 function logOut(){
     localStorage.removeItem('token');
     router.push('/login')
@@ -24,42 +35,52 @@ const toggle = useToggleSidebar();
                         <span class="brand-collapsed">Inc</span>
                     </a>
                 </li>
-            <a href="#" class="nav-link d-flex mt-3">
-                <img class="rounded-circle img-fluid img-sidebar" src="@/assets/imgboy_1.jpg" alt="#">
+            <a v-if="currentUser" href="#" class="nav-link d-flex mt-3">
+                <img
+                    v-if="currentUser.image"
+                    class="rounded-circle img-fluid img-sidebar"
+                    v-bind:src="host + currentUser.image.contentUrl"
+                    alt="image">
                 <div>
-                    <span class="ms-3 sidebar-text">Fathullo</span><br/>
-                    <span class="ms-3 sidebar-text gmail_size">fathullolimov@gmail.com</span>
+                    <span class="ms-3 sidebar-text">{{currentUser.familyName}} {{currentUser.givenName}}</span><br/>
+                    <span class="ms-3 sidebar-text gmail_size">{{currentUser.email}} </span>
                 </div>
             </a>
             <li class="nav-item">
+                <router-link class="nav-link" to="/">
+                    <i class="bi bi-grid p-2 sidebar-icon icon_size"></i>
+                    <span class="sidebar-text">{{$t('Dashboard')}}</span>
+                </router-link>
+            </li>
+            <li class="nav-item">
                 <router-link class="nav-link" to="/user-info">
                     <i class="bi bi-person-plus p-2 sidebar-icon icon_size"></i>
-                    <span class="sidebar-text">Users</span>
-                 </router-link>
+                    <span class="sidebar-text">{{$t('Users')}}</span>
+                </router-link>
             </li>
             <li class="nav-item">
                 <router-link class="nav-link" to="/company-info">
                     <i class="bi bi-buildings p-2 sidebar-icon icon_size"></i>
-                    <span class="sidebar-text">Companies</span>
+                    <span class="sidebar-text">{{$t('Companies')}}</span>
                 </router-link>
                 </li>
             <li class="nav-item">
                  <router-link class="nav-link" to="/clients-info">
                     <i class="bi bi-people p-2 sidebar-icon icon_size"></i>
-                    <span class="sidebar-text">Customers</span>
+                    <span class="sidebar-text">{{$t('Customers')}}</span>
                  </router-link>
             </li>
             <hr/>
             <li class="nav-item">
                 <router-link class="nav-link" to="/settings">
                     <i class="bi bi-gear p-2 sidebar-icon icon_size"></i>
-                    <span class="sidebar-text">Settings</span>
+                    <span class="sidebar-text">{{$t('Settings')}}</span>
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link @click="logOut()" class="nav-link" to="/login">
                     <i class="bi bi-box-arrow-right p-2 sidebar-icon icon_size"></i>
-                    <span class="sidebar-text">Log out</span>
+                    <span class="sidebar-text">{{$t('Log out')}}</span>
                 </router-link>
             </li>
         </ul>
@@ -70,7 +91,7 @@ const toggle = useToggleSidebar();
                 @click="toggle.toggleSidebar()"
             >
                 <i class="bi bi-arrows-collapse-vertical p-2 icon_size"></i>
-                <span class="sidebar-text">Collapse</span>
+                <span class="sidebar-text">{{$t('Collapse')}}</span>
             </button>
         </div>
     </aside>
