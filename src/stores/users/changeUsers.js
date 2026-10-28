@@ -1,8 +1,6 @@
 import {defineStore} from "pinia";
 import {client} from '@/plugins/axios.js';
 
-const host = import.meta.env.VITE_API_DOMEN
-
 export const useChangeUser = defineStore('changeUser', () => {
     function changeUser(id, data) {
         return new Promise((resolve, reject) => {

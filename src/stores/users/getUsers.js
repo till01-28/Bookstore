@@ -1,11 +1,12 @@
 import {defineStore} from "pinia";
-import {reactive} from "vue";
 import {client} from "@/plugins/axios.js";
+import {reactive} from "vue";
 
 export const useGetUsers = defineStore('getUsers', () => {
     const userState = reactive({
         users: [],
         count: 0,
+        allUsers: []
     })
 
     function getUsers(url = '') {

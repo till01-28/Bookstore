@@ -111,23 +111,23 @@ function remove(id) {
 const searches = [
     {
         id: 'name',
-        label: 'Nomi',
-        placeholder: 'Kompaniya nomini qidirish'
+        label: 'Company Name',
+        placeholder: 'Search by company name'
     },
     {
         id: 'email',
         label:'Email',
-        placeholder: 'Email qidirish'
+        placeholder: 'Search by email'
     },
     {
         id: 'password',
-        label: 'Parol',
-        placeholder: 'Parol qidirish'
+        label: 'Password',
+        placeholder: 'Search by password'
     },
     {
-        id: 'lastActivityAt',
-        label: 'Activity',
-        type: 'date',
+        id: 'createdAt',
+        label: 'Creation Date',
+        placeholder: 'Search by creation date'
     }
 ]
 //**********************************************************************************************************************
@@ -136,11 +136,29 @@ const {selectedSearch, visibleSearches} = useSearchFilter(searches)
 const searchCompany = useSearchCompanies();
 
 function searchCompanyInfo(searchParams) {
-    searchCompany.searchCompanies(
-        searchParams, '/companies',
-    )
+    const companyStore = useFetchCompanies();
+
+    if(!companyStore.getCompanies.allCompanies){
+        companyStore.getCompanies.allCompanies = [...companyStore.getCompanies.companies];
+    }
+
+    if(searchParams.field === 'createdAt') {
+        const query = searchParams.value.trim().toLowerCase();
+        if(!query) {
+            companyStore.getCompanies.allCompanies = [...companyStore.getCompanies.companies];
+            return;
+        }
+        companyStore.getCompanies.companies = companyStore.getCompanies.allCompanies.filter((companies) => {
+            const formattedDate = formatLastActivity(companies.createdAt).toLowerCase();
+            return formattedDate.includes(query);
+        });
+        return;
+    }
+    searchCompany.searchCompanies(searchParams, '/companies',)
         .then((res) => {
-            useFetchCompanies().companyState.companies = [...res.data.member].sort((a, b) => b.id - a.id);
+            const sortedCompanies = [...res.data.member].sort((a, b) => b.id - a.id);
+            companyStore.companyState.companies = sortedCompanies;
+            companyStore.getCompanies.allCompanies = sortedCompanies;
         })
         .catch(() => {
             console.log("ERROR, search is Failed")
@@ -152,10 +170,10 @@ function searchCompanyInfo(searchParams) {
 // Table modifications
 
 const thCompanyColumns = [
-    'Kompaniyalar',
+    'Companies',
     'Email',
-    'Parol',
-    "So'ngi faollik",
+    'Password',
+    "Creation Date",
     '',
     '',
 ]
@@ -190,14 +208,14 @@ function formatLastActivity(date) {
 </script>
 
 <template>
-    <NavBar button-name="Kompaniya" modal-id="addCompany"/>
+    <NavBar button-name="Create Company" modal-id="addCompany"/>
     <div class="container-fluid">
         <div class="container-fluid">
             <FormFilter
                 v-model="selectedSearch"
                 v-bind:show-entity="true"
                 v-bind:searches="searches"
-                entity-name="Kompaniyalar:"
+                entity-name="Companies:"
                 class="company-filter"
             />
             <div class="d-flex justify-content-between align-items-center mb-3 gap-3 search-container">
@@ -248,7 +266,7 @@ function formatLastActivity(date) {
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
                 <div class="modal-header text-center">
-                    <h5 class="modal-title modal-font-name">Kompaniya malumotlarini kiriting</h5>
+                    <h5 class="modal-title modal-font-name">{{$t('Add company information')}}</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -256,7 +274,7 @@ function formatLastActivity(date) {
                             <FormInput
                                 v-model="companyAdd.name"
                                 props-id="name"
-                                label-name="To'liq Nomi"
+                                label-name="Company Name"
                                 input-type="name"
                                 placeholder="Kadirov Dev Academy"
                                 v-bind:required="true"
@@ -280,7 +298,7 @@ function formatLastActivity(date) {
                             <FormInput
                                 @change="selectImage($event)"
                                 props-id="file"
-                                label-name="Rasm tanlang"
+                                label-name="Upload Image"
                                 input-type="file"
                                 v-bind:required="true"
                             />
@@ -289,7 +307,7 @@ function formatLastActivity(date) {
                 </div>
                 <div class="modal-footer d-flex justify-content-center align-items-center border-0">
                     <FormButton
-                        text="Qo'shish"
+                        text="Create"
                         v-bind:loading="isLoading"
                         @click="create"
                         data-bs-dismiss="modal"
@@ -297,7 +315,7 @@ function formatLastActivity(date) {
                         v-bind:font-weight="400"
                     />
                     <FormButton
-                        text="Yopish"
+                        text="Close"
                         data-bs-dismiss="modal"
                         class="button-company-edit"
                         v-bind:font-weight="400"
@@ -310,7 +328,7 @@ function formatLastActivity(date) {
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
                 <div class="modal-header">
-                    <h5 class="modal-title modal-font-name">Malumotlarni o'zgartiring</h5>
+                    <h5 class="modal-title modal-font-name">{{$t('Edit company information')}}</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -318,7 +336,7 @@ function formatLastActivity(date) {
                             <FormInput
                                 v-model="companyEdit.name"
                                 props-id="name"
-                                label-name="To'liq Ism"
+                                label-name="Company Name"
                                 input-type="name"
                                 placeholder="Fathullo Olimov"
                                 v-bind:required="true"
@@ -344,14 +362,14 @@ function formatLastActivity(date) {
                 </div>
                 <div class="modal-footer d-flex justify-content-center align-items-center border-0">
                     <FormButton
-                        text="Qo'shish"
+                        text="Save"
                         data-bs-dismiss="modal"
                         @click="change()"
                         class="button-company-edit"
                         v-bind:font-weight="400"
                     />
                     <FormButton
-                        text="Yopish"
+                        text="Close"
                         data-bs-dismiss="modal"
                         class="button-company-edit"
                         v-bind:font-weight="400"
@@ -364,11 +382,11 @@ function formatLastActivity(date) {
         <div class="modal-dialog">
             <div class="modal-content rounded-0 border-0">
                 <div class="d-flex justify-content-around align-items-center m-3">
-                    <span class="company-del-name">Rostan ham o'chirilsinmi ?</span>
+                    <span class="company-del-name">{{$t('Do you really want to delete ?')}}</span>
                     <div>
                         <FormButton
                             type="button"
-                            text="Ha"
+                            text="Yes"
                             class="company-del-btn company-del-red me-4 del-icon-pos"
                             @click="remove(selectedCompanyId)"
                             data-bs-dismiss="modal"
@@ -377,7 +395,7 @@ function formatLastActivity(date) {
                         />
                         <FormButton
                             type="button"
-                            text="Yo'q"
+                            text="No"
                             class="company-del-btn company-del-green del-icon-pos"
                             data-bs-dismiss="modal"
                             v-bind:font-weight="400"
@@ -388,7 +406,9 @@ function formatLastActivity(date) {
             </div>
         </div>
     </div>
-    <FormNotificationModal modal-id="companyAdded" text="Kompaniya muaffaqiyatli qushildi !"/>
+    <FormNotificationModal
+        modal-id="companyAdded"
+        text="Company is added successfully!"/>
 </template>
 
 <style scoped>
@@ -396,34 +416,34 @@ function formatLastActivity(date) {
     font-family: "Poppins",serif !important;
     color: #707683 !important;
     font-size: 13px;
-    font-weight: 400 !important;
-    line-height: 100% !important;
+    font-weight: 400;
+    line-height: 100%;
 }
 .company-tbNames-font {
     font-family: "Poppins", serif !important;
-    color: #323C47 !important;
+    color: #323C47;
     font-size: 15px;
-    font-weight: 500 !important;
-    line-height: 100% !important;
+    font-weight: 500;
+    line-height: 100%;
 }
 .company-filter {
     font-family: "Poppins", sans-serif !important;
-    color: #707683 !important;
-    font-size: 12px !important;
-    font-weight: 400 !important;
-    line-height: 100% !important;
-    padding: 10px 0 10px 0 !important;
+    color: #707683;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 100%;
+    padding: 10px 0 10px 0;
 }
 .modal-font-name {
     font-family: "Poppins",serif !important;
-    font-weight: 600 !important;
-    line-height: 100% !important;
-    font-size: 13px !important;
+    font-weight: 600;
+    line-height: 100%;
+    font-size: 13px;
 }
 .button-company-edit{
-    width: 108px !important;
-    height: 29px !important;
-    line-height: 24px !important;
+    width: 108px;
+    height: 29px;
+    line-height: 24px;
 }
 
 .company-del-btn{

@@ -126,28 +126,28 @@ function remove(id){
 const searches = [
     {
         id: 'name',
-        label: 'Mijoz Ismi',
-        placeholder: 'Mijozlarni ismini qidirish'
+        label: 'Customer Name',
+        placeholder: 'Search by customer name',
     },
     {
         id: 'email',
         label: 'Email',
-        placeholder: 'Email qidirish'
+        placeholder: 'Search by email',
     },
     {
         id: 'password',
         label: 'Password',
-        placeholder: 'Parol qidirish'
+        placeholder: 'Search by password'
     },
     {
         id: 'company.name',
-        label: 'Company',
-        placeholder: 'Ishlash joini qidirish'
+        label: 'Workplace',
+        placeholder: 'Search by workplace',
     },
     {
-        id:'lastActivityAt',
-        label: 'Activity',
-        type: 'date'
+        id:'createdAt',
+        label: 'Creation Date',
+        placeholder: 'Search by creation date',
     }
 ]
 const {selectedSearch, visibleSearches} = useSearchFilter(searches)
@@ -155,12 +155,28 @@ const {selectedSearch, visibleSearches} = useSearchFilter(searches)
 const searchStore = useSearchClients();
 
 function searchClient(searchParams) {
-    searchStore.searchClients(
-        searchParams,
-        'clients/getClients'
-    )
+    const clientStore = useGetClients();
+
+    if(!clientStore.clientState.allClients){
+        clientStore.clientState.allClients = [...clientStore.clientState.clients]
+    }
+    if(searchParams.field === 'createdAt') {
+        const query = searchParams.value.trim().toLowerCase();
+        if(!query) {
+            clientStore.clientState.clients = [...clientStore.clientState.clients];
+            return;
+        }
+        clientStore.clientState.clients = clientStore.clientState.allClients.filter((client) => {
+            const formattedDate = formatLastActivity(client.createdAt).toLowerCase();
+            return formattedDate.includes(query);
+        });
+        return;
+    }
+    searchStore.searchClients(searchParams, 'clients/getClients')
         .then((res) => {
-            useGetClients().clientState.clients = [...res.data.member].sort((a, b) => b.id - a.id);
+            const sortedClients = [...res.data.member].sort((a, b) => b.id - a.id);
+            clientStore.clientState.clients = sortedClients;
+            clientStore.clientState.allClients = sortedClients;
         })
         .catch(() => {
             console.log('ERROR, search is failed');
@@ -170,11 +186,11 @@ function searchClient(searchParams) {
 // TABLE MODIFICATIONS
 
 const thClientColumns = [
-    'Mijozlar',
+    'Customers',
     'Email',
-    'Parol',
-    'Ishlash joyi',
-    "So'ngi faollik",
+    'Password',
+    'Workplace',
+    "Creation Date",
     '',
     '',
 ]
@@ -209,14 +225,14 @@ function formatLastActivity(date) {
 </script>
 
 <template>
-    <NavBar button-name="Mijoz" modal-id="addClient"/>
+    <NavBar button-name="Create Customer" modal-id="addClient"/>
     <div class="container-fluid">
         <div class="container-fluid">
             <FormFilter
                 v-model="selectedSearch"
                 v-bind:searches="searches"
                 v-bind:show-entity="true"
-                entity-name="Mijozlar:"
+                entity-name="Customers:"
                 class="client-filter"
             />
             <div class="d-flex justify-content-between align-items-center mb-3 gap-3 search-container">
@@ -269,7 +285,7 @@ function formatLastActivity(date) {
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
                 <div class="modal-header">
-                    <h5 class="modal-title modal-font-name">Mijoz malumotlarini kiriting</h5>
+                    <h5 class="modal-title modal-font-name">{{$t('Add customer information')}}</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -277,7 +293,7 @@ function formatLastActivity(date) {
                             <FormInput
                                 v-model="clientAdd.name"
                                 props-id="name"
-                                label-name="To'liq Ism"
+                                label-name="Customer Name"
                                 input-type="name"
                                 placeholder="Fathullo Olimov"
                                 v-bind:required="true"
@@ -302,13 +318,13 @@ function formatLastActivity(date) {
                                 v-model="clientAdd.company"
                                 v-bind:options="companies"
                                 props-id="company"
-                                label-name="Ish joyi"
+                                label-name="Workplace"
                                 v-bind:required="true"
                             />
                             <FormInput
                                 @change="selectImage($event)"
                                 props-id="file"
-                                label-name="Rasm tanlang"
+                                label-name="Upload Image"
                                 input-type="file"
                                 v-bind:required="true"
                             />
@@ -317,7 +333,7 @@ function formatLastActivity(date) {
                 </div>
                 <div class="modal-footer d-flex justify-content-center align-items-center border-0">
                     <FormButton
-                        text="Qo'shish"
+                        text="Create"
                         @click="create"
                         v-bind:loading="isLoading"
                         data-bs-dismiss="modal"
@@ -325,7 +341,7 @@ function formatLastActivity(date) {
                         v-bind:font-weight="400"
                     />
                     <FormButton
-                        text="Yopish"
+                        text="Close"
                         data-bs-dismiss="modal"
                         class="button-client-edit"
                         v-bind:font-weight="400"
@@ -338,7 +354,7 @@ function formatLastActivity(date) {
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content border-0 rounded-0">
                 <div class="modal-header text-center">
-                    <h5 class="modal-title modal-font-name">Malumotlarni o'zgartiring</h5>
+                    <h5 class="modal-title modal-font-name">{{$t('Edit customer information')}}</h5>
                 </div>
                 <div class="modal-body pt-0 pb-0">
                     <form>
@@ -346,7 +362,7 @@ function formatLastActivity(date) {
                             <FormInput
                                 v-model="clientEdit.name"
                                 props-id="name"
-                                label-name="To'liq Ism"
+                                label-name="Customer Name"
                                 input-type="name"
                                 placeholder="Fathullo Olimov"
                                 v-bind:required="true"
@@ -371,7 +387,7 @@ function formatLastActivity(date) {
                                 v-model="clientEdit.company"
                                 v-bind:options="companies"
                                 props-id="company"
-                                label-name="Ish joyi"
+                                label-name="Workplace"
                                 v-bind:required="true"
                             />
                         </div>
@@ -379,14 +395,14 @@ function formatLastActivity(date) {
                 </div>
                 <div class="modal-footer d-flex justify-content-center align-items-center border-0">
                     <FormButton
-                        text="Qo'shish"
+                        text="Save"
                         @click="change()"
                         data-bs-dismiss="modal"
                         class="button-client-edit"
                         v-bind:font-weight="400"
                     />
                     <FormButton
-                        text="Yopish"
+                        text="Close"
                         data-bs-dismiss="modal"
                         class="button-client-edit"
                         v-bind:font-weight="400"
@@ -399,11 +415,11 @@ function formatLastActivity(date) {
         <div class="modal-dialog">
             <div class="modal-content rounded-0 border-0">
                 <div class="d-flex justify-content-around align-items-center m-3">
-                    <span class="client-del-name">Rostan ham o'chirilsinmi ?</span>
+                    <span class="client-del-name">{{$t('Do you really want to delete ?')}}</span>
                     <div>
                         <FormButton
                             type="button"
-                            text="Ha"
+                            text="Yes"
                             class="client-del-btn client-del-red me-4 del-icon-pos"
                             @click="remove(selectedClientId)"
                             data-bs-dismiss="modal"
@@ -412,7 +428,7 @@ function formatLastActivity(date) {
 
                         <FormButton
                             type="button"
-                            text="Yo'q"
+                            text="No"
                             class="client-del-btn client-del-green del-icon-pos"
                             data-bs-dismiss="modal"
                             v-bind:font-weight="400"
@@ -424,7 +440,7 @@ function formatLastActivity(date) {
     </div>
     <FormNotificationModal
         modal-id="clientAdded"
-        text="Mijoz muaffaqiyatli qushildi !"
+        text="Customer is added successfully!"
         class="font-poppins_name"
     />
 </template>
@@ -432,36 +448,36 @@ function formatLastActivity(date) {
 <style scoped>
 .client-tbCol-font {
     font-family: "Poppins",serif !important;
-    color: #707683 !important;
+    color: #707683;
     font-size: 13px;
-    font-weight: 400 !important;
-    line-height: 100% !important;
+    font-weight: 400;
+    line-height: 100%;
 }
 .client_tbNames-font {
     font-family: "Poppins", serif !important;
-    color: #323C47 !important;
+    color: #323C47;
     font-size: 15px;
-    font-weight: 500 !important;
-    line-height: 100% !important;
+    font-weight: 500;
+    line-height: 100%;
 }
 .client-filter{
     font-family: 'Poppins',serif !important;
-    font-weight: 400 !important;
-    font-size: 12px !important;
-    line-height: 100% !important;
-    color: #707683 !important;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 100%;
+    color: #707683;
     padding: 10px 0 10px 0;
 }
 .modal-font-name {
     font-family: "Poppins",serif !important;
-    font-weight: 600 !important;
-    line-height: 100% !important;
-    font-size: 13px !important;
+    font-weight: 600;
+    line-height: 100%;
+    font-size: 13px;
 }
 .button-client-edit{
-    width: 108px !important;
-    height: 29px !important;
-    line-height: 24px !important;
+    width: 108px;
+    height: 29px;
+    line-height: 24px;
 }
 .client-del-btn{
     width: 94px;

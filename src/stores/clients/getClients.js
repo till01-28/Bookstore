@@ -6,6 +6,7 @@ export const useGetClients = defineStore('getClients', () => {
     const clientState = reactive({
         clients: [],
         count: 0,
+        allClients: []
         })
 
     function getClients(url = '') {
