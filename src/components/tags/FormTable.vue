@@ -16,7 +16,7 @@ defineProps({
     <thead>
     <tr>
         <th v-for="(column, index) in thColumns" v-bind:key="index" class="font-table align-middle ps-3">
-            {{column}}
+            {{$t(column)}}
         </th>
     </tr>
     </thead>

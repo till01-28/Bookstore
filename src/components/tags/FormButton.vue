@@ -17,7 +17,7 @@ defineProps({
 
 <template>
     <button class="button-size" type="button" id="login">
-        <span class="button-text" v-bind:style="{ fontWeight }">{{text}}</span>
+        <span class="button-text" v-bind:style="{ fontWeight }">{{$t(text)}}</span>
         <span v-if="loading" class="spinner-border spinner-border-sm text-light ms-2"></span>
     </button>
 </template>

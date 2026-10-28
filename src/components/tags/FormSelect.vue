@@ -30,7 +30,7 @@ const emit = defineEmits(['update:modelValue']);
 <template>
     <div class="mt-3">
         <label v-bind:for="propsId" class="form-label">
-            {{ labelName }}
+            {{$t(labelName)}}
             <i v-if="required" class="bi bi-asterisk asterisk"></i>
         </label>
 

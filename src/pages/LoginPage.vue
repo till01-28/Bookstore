@@ -28,14 +28,14 @@ function auth() {
     <div class="row vh-100 justify-content-center align-items-center">
         <div class="col-12 col-sm-8 col-md-6 col-xl-4 ">
             <form @submit.prevent="auth" class="login_font">
-                <h1 class="text-center mt-3">Log In</h1>
+                <h1 class="text-center mt-3">{{$t('Log In')}}</h1>
                 <FormInput v-model="authorization.email" props-id="email" label-name="Email" input-type="email"/>
                 <FormInput v-model="authorization.password" props-id="password" label-name="Password" input-type="text"/>
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <div>
-                        <span class="">Are you not signed up, yet?</span> <br/>
-                        <span>Please click
-                            <router-link to="/register" class="text-decoration-none"> Sign Up.</router-link>
+                        <span class="">{{$t('Are you not signed up, yet?')}}</span> <br/>
+                        <span>{{$t('Please click')}}
+                            <router-link to="/register" class="text-decoration-none">{{$t('Sign Up.')}}</router-link>
                     </span>
                     </div>
                     <FormButton @click="auth()" text="Login" v-bind:loading="isLoading"/>

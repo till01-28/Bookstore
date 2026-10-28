@@ -24,18 +24,18 @@ defineEmits(['update:modelValue'])
 <template>
     <div
         v-if="showEntity"
-        class="d-flex justify-content-start align-items-center"
+        class="d-flex justify-content-start align-items-baseline"
     >
-        <span>{{ entityName }}</span>
+        <span>{{$t(entityName)}}</span>
 
         <span class="d-inline-block custom-select">
             <select
-                class="form-select border-0 rounded-0 shadow-none ps-1 font-filter"
+                class="form-select border-0 rounded-0 shadow-none ps-1 font-filter "
                 v-bind:value="modelValue"
                 @change="$emit('update:modelValue', $event.target.value)"
             >
                 <option value="all">
-                    Hammasi
+                    {{$t('Show all filters')}}
                 </option>
 
                 <option
@@ -43,9 +43,8 @@ defineEmits(['update:modelValue'])
                     v-bind:key="search.id"
                     v-bind:value="search.id"
                 >
-                    {{search.label}}
+                    {{$t(search.label)}}
                 </option>
-
             </select>
         </span>
     </div>
@@ -55,13 +54,12 @@ defineEmits(['update:modelValue'])
 
 .form-select{
     background-color: #F5F6F8;
-    font-size: 14px;
+    font-size: 12px;
 }
 .font-filter {
-    font-family: 'Poppins', serif;
+    font-family:"Poppins", sans-serif;
     font-weight: 400;
     font-size: 12px;
-    line-height: 100%;
     color: #109CF1;
 }
 
@@ -69,6 +67,7 @@ defineEmits(['update:modelValue'])
     background-image: none;
     appearance: none;
     -webkit-appearance: none;
+    cursor: pointer;
 }
 
 .custom-select {
@@ -90,5 +89,4 @@ defineEmits(['update:modelValue'])
     transform: translateY(-25%);
     pointer-events: none;
 }
-
 </style>

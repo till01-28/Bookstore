@@ -17,7 +17,7 @@ defineProps({
             <div class="modal-content modal-dimensions d-flex justify-content-center align-items-center">
                 <div class="d-flex align-items-center">
                     <span><i class="bi bi-check-circle modal-tick-icon"></i></span>
-                    <span class="modal-text">{{text}}</span>
+                    <span class="modal-text">{{$t(text)}}</span>
                 </div>
             </div>
         </div>

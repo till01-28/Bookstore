@@ -12,18 +12,17 @@ const emit = defineEmits(['search']);
 
 const searchValues = reactive({});
 
-let timeout;
+const timeouts = {};
 
 function handleSearch(search) {
-    clearTimeout(timeout);
+    clearTimeout(timeouts[search.id]);
 
-    timeout = setTimeout(() => {
-
+    timeouts[search.id] = setTimeout(() => {
         emit('search', {
             field: search.id,
             value: searchValues[search.id] || ''
         })
-    }, 500);
+    }, 200);
 }
 </script>
 
@@ -38,19 +37,10 @@ function handleSearch(search) {
         </span>
 
         <input
-            v-if="search.type === 'date'"
-            v-model="searchValues[search.id]"
-            type="date"
-            class="form-control border-0 rounded-0 shadow-none searches-box-font searches-box-date-color"
-            @change="handleSearch(search)"
-        />
-
-        <input
-            v-else
             v-model="searchValues[search.id]"
             type="text"
             class="form-control border-0 rounded-0 shadow-none searches-box-font"
-            v-bind:placeholder="search.placeholder"
+            v-bind:placeholder="$t(search.placeholder)"
             @input="handleSearch(search)"
         />
     </div>
@@ -64,21 +54,22 @@ function handleSearch(search) {
 }
 
 .searches-box-font {
-    font-family: "Poppins", serif !important;
-    font-size: 12px !important;
-    font-weight: 400 !important;
+    font-family: "Poppins", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
     color: #90A0B7;
 }
 
 .searches-box-font::placeholder {
-    color: #90A0B7 !important;
+    color: #90A0B7;
     opacity: 1;
 }
 
 .searches-icon-font{
     color: #C2CFE0 !important;
-    width: 20px !important;
-    height: 20px !important;
+    width: 20px;
+    height: 20px;
     display: flex;
     justify-content: center;
     align-items: center;

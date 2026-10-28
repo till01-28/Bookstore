@@ -28,7 +28,7 @@ defineEmits(["update:modelValue"])
 
 <template>
     <div class="mt-3">
-        <label v-bind:for="propsId" class="form-label input-font">{{labelName}}
+        <label v-bind:for="propsId" class="form-label input-font">{{$t(labelName)}}
             <i v-if="required" class="bi bi-asterisk asterisk"></i></label>
         <input
             @input="$emit('update:modelValue',$event.target.value)"
@@ -44,10 +44,10 @@ defineEmits(["update:modelValue"])
 <style scoped>
 
 .input-font{
-    font-family: "Poppins", sans-serif !important;
-    color: #444150 !important;
-    font-size: 14px !important;
-    font-weight: 400 !important;
+    font-family: "Poppins", sans-serif;
+    color: #444150;
+    font-size: 14px;
+    font-weight: 400;
     line-height: 24px;
 }
 

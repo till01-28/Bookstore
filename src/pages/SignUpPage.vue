@@ -68,7 +68,7 @@ function register() {
     <div class="row vh-100 justify-content-center align-items-center">
         <div class="col-12 col-sm-8 col-md-8 col-xl-4">
             <form @submit.prevent="register" class="border rounded sign_up_font">
-                <h1 class="text-center mt-3">Sign Up Form</h1>
+                <h1 class="text-center mt-3">{{$t('Sign Up Form')}}</h1>
                     <div class="m-3">
                         <FormInput
                             v-model="form.givenName"
@@ -98,22 +98,22 @@ function register() {
                             v-model="form.plainPassword"
                             props-id="password"
                             placeholder="12345678"
-                            label-name="Create password"
+                            label-name="Create Password"
                             input-type="password"
                             v-bind:required="true"
                         />
                         <FormInput
                             @change="selectImage($event)"
                             props-id="addFile"
-                            label-name="Rasm tanlang"
+                            label-name="Upload Image"
                             input-type="file"
                             v-bind:key="fileInputKey"
                         />
                     </div>
                 <div class="m-3 d-flex justify-content-between align-items-center">
                     <span
-                        class="">If you have an account.
-                        Click <router-link to="/login" class="text-decoration-none">Log In</router-link>
+                        class="">{{$t('If you have an account.')}}
+                        {{$t('Click')}}<router-link to="/login" class="text-decoration-none">{{$t('Log In')}}</router-link>
                     </span>
                     <FormButton
                         @click="register()"
