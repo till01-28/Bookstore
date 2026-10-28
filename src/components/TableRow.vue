@@ -1,5 +1,4 @@
 <script setup>
-
 import FormTable from "@/components/tags/FormTable.vue";
 </script>
 
@@ -10,7 +9,8 @@ import FormTable from "@/components/tags/FormTable.vue";
                 <FormTable/>
                 <tbody class="table_dimensions">
                 <td>
-                    <td><img src="@/assets/logo.jpg" class="rounded-circle me-2 m-2 img-table" alt="#">
+                    <td>
+                        <img src="@/assets/imgboy_1.jpg" class="rounded-circle me-2 m-2 img-table" alt="#">
                     </td>
                     <td></td>
                     <td></td>
