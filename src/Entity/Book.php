@@ -27,7 +27,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                     new Parameter(
                         name: 'categoryId',
                         in: 'query',
-                        description: 'Get book by Category Id',
+                        description: 'Get book by category id',
                         required: true,
                         schema: ['type'=>'integer', 'required'=>true]
                     )
@@ -36,7 +36,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             name: 'getBooksByCategory'
         ),
         new GetCollection(
-            uriTemplate: 'books/get-books',
+            uriTemplate: 'books',
             controller: GetBooksAction::class,
             name: 'getBooks'
         ),
@@ -48,33 +48,34 @@ use Symfony\Component\Serializer\Annotation\Groups;
     denormalizationContext: ['groups' => ['book:write']],
     paginationItemsPerPage: 5
 )]
-#[Groups(['book:read'])]
+
 class Book
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['book:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['book:write'])]
+    #[Groups(['book:write', 'book:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['book:write'])]
+    #[Groups(['book:write','book:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['book:write'])]
+    #[Groups(['book:write','book:read'])]
     private ?string $text = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['book:write'])]
+    #[Groups(['book:write', 'book:read'])]
     private ?Category $category = null;
 
     #[ORM\ManyToOne]
-    #[Groups(['book:write'])]
+    #[Groups(['book:write','book:read'])]
     private ?MediaObject $image = null;
 
     public function getId(): ?int
