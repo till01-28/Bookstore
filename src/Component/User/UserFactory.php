@@ -6,8 +6,8 @@ namespace App\Component\User;
 
 use App\Entity\User;
 use DateTime;
-use DateTimeImmutable;
 use DateTimeZone;
+use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class UserFactory
@@ -40,7 +40,8 @@ readonly class UserFactory
         $user->setPassword($hashedPassword);
         $user->setPhone($phone);
         $user->setBirthDate($birthDate);
-        $user->setCreatedAt(new DateTimeImmutable(timezone: new DateTimeZone('Asia/Tashkent')));
+        $user->setCreatedAt(new DatePoint(timezone: new DateTimeZone('Asia/Tashkent')));
+
         return $user;
     }
 }
