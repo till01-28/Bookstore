@@ -42,7 +42,7 @@ const toggle = useToggleSidebar();
                     v-bind:src="host + currentUser.image.contentUrl"
                     alt="image">
                 <div>
-                    <span class="ms-3 sidebar-text">{{currentUser.familyName}} {{currentUser.givenName}}</span><br/>
+                    <span class="ms-3 sidebar-text">{{currentUser.fullName}} </span><br/>
                     <span class="ms-3 sidebar-text gmail_size">{{currentUser.email}} </span>
                 </div>
             </a>

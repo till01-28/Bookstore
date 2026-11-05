@@ -17,8 +17,7 @@ const fileInputKey = ref(0);
 const {selectImage,file} = useImageFile();
 
 const form = reactive({
-    givenName: '',
-    familyName: '',
+    fullName: '',
     email: '',
     plainPassword: ''
 });
@@ -53,8 +52,7 @@ function register() {
         .finally(() => {
             isLoading.value = false;
 
-            form.givenName = '';
-            form.familyName = '';
+            form.fullName = '';
             form.email = '';
             form.plainPassword = '';
             file.value = null;
@@ -71,19 +69,11 @@ function register() {
                 <h1 class="text-center mt-3">{{$t('Sign Up Form')}}</h1>
                     <div class="m-3">
                         <FormInput
-                            v-model="form.givenName"
-                            props-id="givenName"
-                            label-name="Given Name"
-                            input-type="givenName"
-                            placeholder="John"
-                            v-bind:required="true"
-                        />
-                        <FormInput
-                            v-model="form.familyName"
-                            props-id="familyName"
-                            label-name="Family Name"
-                            input-type="familyName"
-                            placeholder="Doe"
+                            v-model="form.fullName"
+                            props-id="fullName"
+                            label-name="Full Name"
+                            input-type="text"
+                            placeholder="Olimov Fathullo"
                             v-bind:required="true"
                         />
                         <FormInput
@@ -113,12 +103,12 @@ function register() {
                 <div class="m-3 d-flex justify-content-between align-items-center">
                     <span
                         class="">{{$t('If you have an account.')}}
-                        {{$t('Click')}}<router-link to="/login" class="text-decoration-none">{{$t('Log In')}}</router-link>
+                        {{$t('Click')}}<router-link to="/login" class="text-decoration-none">{{$t(' Log In')}}</router-link>
                     </span>
                     <FormButton
                         @click="register()"
                         text="Sign Up"
-                        type="button"
+                        type="submit"
                         v-bind:loading="isLoading"
                     />
                 </div>

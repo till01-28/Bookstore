@@ -29,8 +29,7 @@ const users = computed(() => useGetUsers().userState.users)
 // User Add Button
 let isLoading = ref(false)
 let userAdd = reactive({
-    givenName: '',
-    familyName: '',
+    fullName: '',
     email: '',
     plainPassword: ''
 })
@@ -58,8 +57,7 @@ function create() {
         .then(() => {
             useGetUsers().getUsers();
 
-            userAdd.givenName = '';
-            userAdd.familyName = '';
+            userAdd.fullName = '';
             userAdd.email = '';
             userAdd.plainPassword = '';
 
@@ -72,16 +70,14 @@ function create() {
 
 let userEdit = reactive({
     id: '',
-    givenName: '',
-    familyName: '',
+    fullName: '',
     email: '',
     plainPassword: ''
 })
 
 function select(user) {
     userEdit.id = user.id;
-    userEdit.givenName = user.givenName;
-    userEdit.familyName = user.familyName;
+    userEdit.fullName = user.fullName;
     userEdit.email = user.email;
     userEdit.plainPassword = user.plainPassword;
 }
@@ -89,16 +85,14 @@ function select(user) {
 function change() {
     useChangeUser().changeUser(
         userEdit.id, {
-            familyName: userEdit.familyName,
-            givenName: userEdit.givenName,
+            fullName: userEdit.fullName,
             email: userEdit.email,
             plainPassword: userEdit.plainPassword,
         })
         .then(() => {
             useGetUsers().getUsers();
 
-            userEdit.givenName = '';
-            userEdit.familyName = '';
+            userEdit.fullName = '';
             userEdit.email = '';
             userEdit.plainPassword = '';
         })
@@ -123,9 +117,9 @@ function remove(id) {
 // SEARCHBAR FUNCTION
 const searches = [
     {
-        id: 'familyName',
-        label: 'Family Name',
-        placeholder: 'Search by family name'
+        id: 'fullName',
+        label: 'Full Name',
+        placeholder: 'Search by user'
     },
     {
         id: 'email',
@@ -147,8 +141,7 @@ const searches = [
 /**
 * @typedef {Object} User
 * @property {number} id
-* @property {string} familyName
-* @property {string} givenName
+* @property {string} fullName
 * @property {string} email
 * @property {string|null} createdAt
 **/
@@ -258,8 +251,7 @@ function formatLastActivity(date) {
                                 class="rounded-circle me-2 m-2 img-table"
                                 alt="image"
                             >
-                            {{ user.familyName }}
-                            {{ user.givenName }}
+                            {{ user.fullName }}
                         </td>
                         <td class="user-tbCol-font">{{ user.email }}</td>
                         <td class="user-tbCol-font">{{ user.plainPassword }}</td>
@@ -293,19 +285,11 @@ function formatLastActivity(date) {
                     <form>
                         <div>
                             <FormInput
-                                v-model="userAdd.familyName"
-                                props-id="addFamilyName"
-                                label-name="Family Name"
+                                v-model="userAdd.fullName"
+                                props-id="addFullName"
+                                label-name="Full Name"
                                 input-type="name"
-                                placeholder="Olimov"
-                                v-bind:required="true"
-                            />
-                            <FormInput
-                                v-model="userAdd.givenName"
-                                props-id="addGivenName"
-                                label-name="Given Name"
-                                input-type="name"
-                                placeholder="Fathullo"
+                                placeholder="Olimov Fathullo"
                                 v-bind:required="true"
                             />
                             <FormInput
@@ -363,19 +347,11 @@ function formatLastActivity(date) {
                     <form>
                         <div>
                             <FormInput
-                                v-model="userEdit.familyName"
-                                props-id="editFamilyName"
-                                label-name="Family Name"
+                                v-model="userEdit.fullName"
+                                props-id="editFullName"
+                                label-name="Full Name"
                                 input-type="name"
-                                placeholder="Olimov"
-                                v-bind:required="true"
-                            />
-                            <FormInput
-                                v-model="userEdit.givenName"
-                                props-id="editGivenName"
-                                label-name="Given Name"
-                                input-type="name"
-                                placeholder="Fathullo"
+                                placeholder="Olimov Fathullo"
                                 v-bind:required="true"
                             />
                             <FormInput

@@ -20,8 +20,7 @@ onMounted(() => {
 
 let currentUserEdit = reactive({
     id:'',
-    familyName: '',
-    givenName: '',
+    fullName: '',
     email: '',
     plainPassword: ''
 });
@@ -29,8 +28,7 @@ let currentUserEdit = reactive({
 watch(currentUser, (newUser) => {
     if (newUser) {
         currentUserEdit.id = newUser.id;
-        currentUserEdit.familyName = newUser.familyName || '';
-        currentUserEdit.givenName = newUser.givenName || '';
+        currentUserEdit.fullName = newUser.fullName || '';
         currentUserEdit.email = newUser.email || '';
         currentUserEdit.plainPassword = newUser.plainPassword || '';
     }
@@ -41,8 +39,7 @@ function editCurrentUser() {
 
     useChangeUser().changeUser(
         currentUserEdit.id, {
-            familyName: currentUserEdit.familyName,
-            givenName: currentUserEdit.givenName,
+            fullName: currentUserEdit.fullName,
             email: currentUserEdit.email,
             plainPassword: currentUserEdit.plainPassword
         })
@@ -107,8 +104,7 @@ function editCurrentUser() {
                                 <div>
                                     <div class="d-flex align-items-center gap-2 mb-1">
                                         <h5 class="mb-0 profile-name">
-                                            {{currentUser.familyName}}
-                                            {{currentUser.givenName}}
+                                            {{currentUser.fullName}}
                                         </h5>
                                         <span
                                             class="custom-badge">
@@ -149,21 +145,11 @@ function editCurrentUser() {
                                     </p>
                                 <div class="col-md-6">
                                     <FormInput
-                                        v-model="currentUserEdit.familyName"
-                                        label-name="Family Name"
+                                        v-model="currentUserEdit.fullName"
+                                        label-name="Full Name"
                                         input-type="text"
-                                        props-id="familyName"
-                                        placeholder="Olimov"
-                                        v-bind:required="true"
-                                    />
-                                </div>
-                                <div class="col-md-6">
-                                    <FormInput
-                                        v-model="currentUserEdit.givenName"
-                                        label-name="Given Name"
-                                        input-type="text"
-                                        props-id="givenName"
-                                        placeholder="Fathullo"
+                                        props-id="fullName"
+                                        placeholder="Olimov Fathullo"
                                         v-bind:required="true"
                                     />
                                 </div>

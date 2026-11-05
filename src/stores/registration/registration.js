@@ -11,8 +11,7 @@ export const useRegisterStore = defineStore('register', {
             console.log('Creating user:', form)
 
             const response = await axios.post(host + '/api/users/createUser',{
-                givenName: form.givenName,
-                familyName: form.familyName,
+                fullName: form.fullName,
                 email: form.email,
                 plainPassword: form.plainPassword,
                 image: form.image
