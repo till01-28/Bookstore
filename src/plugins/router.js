@@ -1,21 +1,15 @@
 import{createRouter, createWebHistory} from "vue-router";
 import {defineAsyncComponent} from "vue";
 
-const ifAuthorized = (to, from, next) => {
-    if (localStorage.getItem('token') !== null) {
-        next();
-    }
-    else {
-        next('/login');
+const ifAuthorized = (to, from) => {
+    if (localStorage.getItem('token') === null) {
+        return '/login';
     }
 }
 
-const ifNotAuthorized = (to, from, next) => {
-    if (localStorage.getItem('token') === null) {
-        next();
-    }
-    else {
-        next('/');
+const ifNotAuthorized = (to, from) => {
+    if (localStorage.getItem('token') !== null) {
+        return '/';
     }
 }
 
