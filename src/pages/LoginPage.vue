@@ -38,7 +38,7 @@ function auth() {
                             <router-link to="/register" class="text-decoration-none">{{$t('Sign Up.')}}</router-link>
                     </span>
                     </div>
-                    <FormButton @click="auth()" text="Login" v-bind:loading="isLoading"/>
+                    <FormButton @click="auth()" text="Log In" v-bind:loading="isLoading"/>
                 </div>
             </form>
         </div>
