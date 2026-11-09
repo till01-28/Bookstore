@@ -52,12 +52,14 @@
   "User is added successfully!" : "User is added successfully!",
   "Company is added successfully!" : "Company is added successfully",
   "Customer is added successfully!" : "Customer is added successfully",
+  "User is created successfully!" : "User is created successfully!",
   "Save changes" : "Save changes",
   "Log In": "Log In",
   "Are you not signed up, yet?": "Are you not signed up, yet?",
   "Please click" : "Please click",
   "Sign Up.": "Sign Up.",
   "Sign Up Form": "Sign Up Form",
+  "Sign Up": "Sign Up",
   "If you have an account.": "If you have an account. ",
   "Click": "Click",
   "Create Password" : "Create password",
@@ -71,7 +73,11 @@
   "Add Customer" : "Add Customer",
   "Total Created Today" : "Total Created Today",
   "Tashkent time" : "Tashkent time",
-  "Dashboard" : "Dashboard"
-
-
+  "Dashboard" : "Dashboard",
+  "never": "Never",
+  "recentlyWithTime": "Recently {{time}}",
+  "minutesAgo_one": "{{count}} minute ago",
+  "minutesAgo_other": "{{count}} minutes ago",
+  "hoursAgo_one": "{{count}} hour ago",
+  "hoursAgo_other": "{{count}} hours ago"
 }

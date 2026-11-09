@@ -53,10 +53,12 @@
   "User is added successfully!": "Foydalanuvchi muvaffaqiyatli qushildi!",
   "Company is added successfully!" : "Kompaniya muvaffaqiyatli qushildi!",
   "Customer is added successfully!": "Mijoz muvaffaqiyatli qushildi!",
+  "User is created successfully!" : "Foydalanuvchi muvaffaqiyatli yaratildi!",
   "Log In": "Login",
   "Are you not signed up, yet?": "Ro'yhatdan o'tmaganmisiz?",
   "Please click" : "Iltimos,",
   "Sign Up.": "ro'yhatdan o'tishni bosing.",
+  "Sign Up" : "Ro'yhatdan o'tish",
   "Sign Up Form": "Ro'yhatdan o'tish",
   "If you have an account.": "Agar hisobingiz bo'lsa, ",
   "Click": "quyidagi sahifaga o'ting:",
@@ -71,5 +73,11 @@
   "Add Customer" : "Klient qo'shish",
   "Total Created Today" : "Bugungi umumiy soni",
   "Tashkent time" : "Toshkent voqti",
-  "Dashboard" : "Ma'lumotlar statistikasi"
+  "Dashboard" : "Ma'lumotlar statistikasi",
+  "never": "Hechqachon",
+  "recentlyWithTime": "Hozirgina {{time}}",
+  "minutesAgo_one": "{{count}} daqiqa oldin",
+  "minutesAgo_other": "{{count}} daqiqa oldin",
+  "hoursAgo_one": "{{count}} soat oldin",
+  "hoursAgo_other": "{{count}} soat oldin"
 }

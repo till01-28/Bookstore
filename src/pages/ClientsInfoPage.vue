@@ -194,19 +194,19 @@ const thClientColumns = [
     '',
     '',
 ]
-function formatLastActivity(date) {
+function formatCreationDate(date) {
     if (!date) {
         return 'Hech qachon';
     }
 
-    const activityDate = new Date(date);
+    const creationDate = new Date(date);
     const now = new Date();
 
-    const time = format(activityDate, 'HH:mm');
+    const time = format(creationDate, 'HH:mm');
 
-    if (isToday(activityDate)) {
-        const minutes = differenceInMinutes(now, activityDate);
-        const hours = differenceInHours(now, activityDate);
+    if (isToday(creationDate)) {
+        const minutes = differenceInMinutes(now, creationDate);
+        const hours = differenceInHours(now, creationDate);
 
         if (minutes < 1) {
             return `Hozirgina ${time}`;
@@ -219,7 +219,7 @@ function formatLastActivity(date) {
         return `${hours} soat oldin ${time}`;
     }
 
-    return format(activityDate, 'dd MMM, yyyy HH:mm');
+    return format(creationDate, 'dd MMM, yyyy HH:mm');
 }
 //**********************************************************************************************************************
 </script>
@@ -260,7 +260,7 @@ function formatLastActivity(date) {
                         <td class="client-tbCol-font">{{client.email}}</td>
                         <td class="client-tbCol-font">{{client.password}}</td>
                         <td class="client-tbCol-font">{{client.company.name}}</td>
-                        <td class="client-tbCol-font">{{formatLastActivity(client.lastActivityAt)}}</td>
+                        <td class="client-tbCol-font">{{formatCreationDate(client.createdAt)}}</td>
                         <td class="penClient">
                             <FormEditPen
                                 edit-modal-id="editClient"

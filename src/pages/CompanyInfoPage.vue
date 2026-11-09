@@ -178,32 +178,32 @@ const thCompanyColumns = [
     '',
 ]
 
-function formatLastActivity(date) {
+function formatCreationDate(date, t) {
     if (!date) {
-        return 'Hech qachon';
+        return t('never');
     }
 
-    const activityDate = new Date(date);
+    const creationDate = new Date(date);
     const now = new Date();
 
-    const time = format(activityDate, 'HH:mm');
+    const time = format(creationDate, 'HH:mm');
 
-    if (isToday(activityDate)) {
-        const minutes = differenceInMinutes(now, activityDate);
-        const hours = differenceInHours(now, activityDate);
+    if (isToday(creationDate)) {
+        const minutes = differenceInMinutes(now, creationDate);
+        const hours = differenceInHours(now, creationDate);
 
         if (minutes < 1) {
-            return `Hozirgina ${time}`;
+            return t('recentlyWithTime', {time});
         }
 
         if (minutes < 60) {
-            return `${minutes} daqiqa oldin ${time}`;
+            return `${t('minutesAgo', {count: minutes})} ${time}`;
         }
 
-        return `${hours} soat oldin ${time}`;
+        return `${t('hoursAgo', {count: hours})} ${time}`;
     }
 
-    return format(activityDate, 'dd MMM, yyyy HH:mm');
+    return format(creationDate, 'dd MMM, yyyy HH:mm');
 }
 </script>
 
@@ -242,7 +242,7 @@ function formatLastActivity(date) {
                         </td>
                         <td class="company-tbCol-font">{{company.email}}</td>
                         <td class="company-tbCol-font">{{company.password}}</td>
-                        <td class="company-tbCol-font">{{formatLastActivity(company.lastActivityAt)}}</td>
+                        <td class="company-tbCol-font">{{formatCreationDate(company.createdAt)}}</td>
                         <td class="pen">
                             <FormEditPen
                                 edit-modal-id="editCompany"

@@ -103,10 +103,9 @@ function register() {
                 <div class="m-3 d-flex justify-content-between align-items-center">
                     <span
                         class="">{{$t('If you have an account.')}}
-                        {{$t('Click')}}<router-link to="/login" class="text-decoration-none">{{$t(' Log In')}}</router-link>
+                        {{$t('Click')}}<router-link to="/login" class="text-decoration-none">{{$t('Log In')}}</router-link>
                     </span>
                     <FormButton
-                        @click="register()"
                         text="Sign Up"
                         type="submit"
                         v-bind:loading="isLoading"
@@ -115,7 +114,7 @@ function register() {
             </form>
         </div>
     </div>
-    <FormNotificationModal modal-id="userRegistered" text="Foydalanuvchi muaffaqiyatli yaratildi !"/>
+    <FormNotificationModal modal-id="userRegistered" text="User is created successfully!"/>
 </template>
 
 <style scoped>

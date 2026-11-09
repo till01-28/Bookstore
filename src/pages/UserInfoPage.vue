@@ -191,19 +191,19 @@ const thUserColumns = [
     '',
 ]
 
-function formatLastActivity(date) {
+function formatCreationDate(date) {
     if (!date) {
         return 'Hech qachon';
     }
 
-    const activityDate = new Date(date);
+    const creationDate = new Date(date);
     const now = new Date();
 
-    const time = format(activityDate, 'HH:mm');
+    const time = format(creationDate, 'HH:mm');
 
-    if (isToday(activityDate)) {
-        const minutes = differenceInMinutes(now, activityDate);
-        const hours = differenceInHours(now, activityDate);
+    if (isToday(creationDate)) {
+        const minutes = differenceInMinutes(now, creationDate);
+        const hours = differenceInHours(now, creationDate);
 
         if (minutes < 1) {
             return `Hozirgina ${time}`;
@@ -216,7 +216,7 @@ function formatLastActivity(date) {
         return `${hours} soat oldin ${time}`;
     }
 
-    return format(activityDate, 'dd MMM, yyyy HH:mm');
+    return format(creationDate, 'dd MMM, yyyy HH:mm');
 }
 </script>
 
@@ -255,7 +255,7 @@ function formatLastActivity(date) {
                         </td>
                         <td class="user-tbCol-font">{{ user.email }}</td>
                         <td class="user-tbCol-font">{{ user.plainPassword }}</td>
-                        <td class="user-tbCol-font">{{ formatLastActivity(user.createdAt) }}</td>
+                        <td class="user-tbCol-font">{{ formatCreationDate(user.createdAt) }}</td>
                         <td class="pen">
                             <FormEditPen
                                 edit-modal-id="editUser"
