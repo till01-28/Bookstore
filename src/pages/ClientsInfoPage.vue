@@ -21,7 +21,8 @@ import {useChangeClients} from "@/stores/clients/changeClients.js";
 import {useDeleteClient} from "@/stores/clients/deleteClients.js";
 import {useSearchClients} from "@/stores/clients/useSearchClients.js";
 import {format, isToday, differenceInMinutes, differenceInHours} from 'date-fns';
-import { uz } from 'date-fns/locale';
+import {enUS, ru, uz} from 'date-fns/locale';
+import {useI18n} from "vue-i18n";
 
 const host = import.meta.env.VITE_API_DOMEN
 useGetClients().getClients();
@@ -194,14 +195,18 @@ const thClientColumns = [
     '',
     '',
 ]
+const { t, locale } = useI18n();
+const dateLocales = {en: enUS, uz, ru };
+
 function formatCreationDate(date) {
     if (!date) {
-        return 'Hech qachon';
+        return t('never');
     }
 
     const creationDate = new Date(date);
     const now = new Date();
 
+    const currentLocale = dateLocales[locale.value] || enUS;
     const time = format(creationDate, 'HH:mm');
 
     if (isToday(creationDate)) {
@@ -209,17 +214,14 @@ function formatCreationDate(date) {
         const hours = differenceInHours(now, creationDate);
 
         if (minutes < 1) {
-            return `Hozirgina ${time}`;
+            return t('recentlyWithTime', {time});
         }
-
         if (minutes < 60) {
-            return `${minutes} daqiqa oldin ${time}`;
+            return `${t('minutesAgo', {count: minutes})} ${time}`;
         }
-
-        return `${hours} soat oldin ${time}`;
+        return `${t('hoursAgo', {count: hours})} ${time}`;
     }
-
-    return format(creationDate, 'dd MMM, yyyy HH:mm');
+    return format(creationDate, 'dd MMM, yyyy HH:mm', {locale: currentLocale});
 }
 //**********************************************************************************************************************
 </script>

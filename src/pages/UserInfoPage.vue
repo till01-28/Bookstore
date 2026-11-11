@@ -19,6 +19,8 @@ import {useSearchUsers} from "@/stores/users/useSearchUsers.js";
 import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
 import {Modal} from 'bootstrap';
 import {differenceInHours, differenceInMinutes, format, isToday} from 'date-fns';
+import {useI18n} from "vue-i18n";
+import {enUS, ru, uz} from "date-fns/locale";
 
 
 const host = import.meta.env.VITE_API_DOMEN;
@@ -191,14 +193,18 @@ const thUserColumns = [
     '',
 ]
 
+const { t, locale } = useI18n();
+const dateLocales = {en: enUS, uz, ru };
+
 function formatCreationDate(date) {
     if (!date) {
-        return 'Hech qachon';
+        return t('never');
     }
 
     const creationDate = new Date(date);
     const now = new Date();
 
+    const currentLocale = dateLocales[locale.value] || enUS;
     const time = format(creationDate, 'HH:mm');
 
     if (isToday(creationDate)) {
@@ -206,17 +212,14 @@ function formatCreationDate(date) {
         const hours = differenceInHours(now, creationDate);
 
         if (minutes < 1) {
-            return `Hozirgina ${time}`;
+            return t('recentlyWithTime', {time});
         }
-
         if (minutes < 60) {
-            return `${minutes} daqiqa oldin ${time}`;
+            return `${t('minutesAgo', {count: minutes})} ${time}`;
         }
-
-        return `${hours} soat oldin ${time}`;
+        return `${t('hoursAgo', {count: hours})} ${time}`;
     }
-
-    return format(creationDate, 'dd MMM, yyyy HH:mm');
+    return format(creationDate, 'dd MMM, yyyy HH:mm', {locale: currentLocale});
 }
 </script>
 

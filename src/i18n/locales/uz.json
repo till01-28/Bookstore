@@ -75,9 +75,9 @@
   "Tashkent time" : "Toshkent voqti",
   "Dashboard" : "Ma'lumotlar statistikasi",
   "never": "Hechqachon",
-  "recentlyWithTime": "Hozirgina {{time}}",
-  "minutesAgo_one": "{{count}} daqiqa oldin",
-  "minutesAgo_other": "{{count}} daqiqa oldin",
-  "hoursAgo_one": "{{count}} soat oldin",
-  "hoursAgo_other": "{{count}} soat oldin"
+  "recentlyWithTime": "Hozirgina {time}",
+  "minutesAgo_one": "{count} daqiqa oldin",
+  "minutesAgo_other": "{count} daqiqa oldin",
+  "hoursAgo_one": "{count} soat oldin",
+  "hoursAgo_other": "{count} soat oldin"
 }

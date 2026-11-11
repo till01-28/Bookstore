@@ -20,7 +20,8 @@ import {Modal} from "bootstrap";
 import FormNotificationModal from "@/components/tags/FormNotificationModal.vue";
 import {useSearchCompanies} from "@/stores/company/useSearchCompanies.js";
 import {format, isToday, differenceInMinutes, differenceInHours} from 'date-fns';
-import { uz } from 'date-fns/locale';
+import {enUS, ru, uz} from 'date-fns/locale';
+import {useI18n} from 'vue-i18n';
 
 const host = import.meta.env.VITE_API_DOMEN
 useFetchCompanies().getCompanies()
@@ -178,7 +179,10 @@ const thCompanyColumns = [
     '',
 ]
 
-function formatCreationDate(date, t) {
+const { t, locale } = useI18n();
+const dateLocales = {en: enUS, uz, ru };
+
+function formatCreationDate(date) {
     if (!date) {
         return t('never');
     }
@@ -186,6 +190,7 @@ function formatCreationDate(date, t) {
     const creationDate = new Date(date);
     const now = new Date();
 
+    const currentLocale = dateLocales[locale.value] || enUS;
     const time = format(creationDate, 'HH:mm');
 
     if (isToday(creationDate)) {
@@ -195,15 +200,12 @@ function formatCreationDate(date, t) {
         if (minutes < 1) {
             return t('recentlyWithTime', {time});
         }
-
         if (minutes < 60) {
             return `${t('minutesAgo', {count: minutes})} ${time}`;
         }
-
         return `${t('hoursAgo', {count: hours})} ${time}`;
     }
-
-    return format(creationDate, 'dd MMM, yyyy HH:mm');
+    return format(creationDate, 'dd MMM, yyyy HH:mm', {locale: currentLocale});
 }
 </script>
 

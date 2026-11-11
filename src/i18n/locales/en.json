@@ -75,9 +75,9 @@
   "Tashkent time" : "Tashkent time",
   "Dashboard" : "Dashboard",
   "never": "Never",
-  "recentlyWithTime": "Recently {{time}}",
-  "minutesAgo_one": "{{count}} minute ago",
-  "minutesAgo_other": "{{count}} minutes ago",
-  "hoursAgo_one": "{{count}} hour ago",
-  "hoursAgo_other": "{{count}} hours ago"
+  "recentlyWithTime": "Recently {time}",
+  "minutesAgo_one": "{count} minute ago",
+  "minutesAgo_other": "{count} minutes ago",
+  "hoursAgo_one": "{count} hour ago",
+  "hoursAgo_other": "{count} hours ago"
 }

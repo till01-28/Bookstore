@@ -74,9 +74,9 @@
   "Tashkent time" : "Ташкентское время",
   "Dashboard" : "Информационная панель",
   "never": "Никогда",
-  "recentlyWithTime": "Сейчас {{time}}",
-  "minutesAgo_one": "{{count}} минут назад",
-  "minutesAgo_other": "{{count}} минут назад",
-  "hoursAgo_one": "{{count}} час назад",
-  "hoursAgo_other": "{{count}} часов назад"
+  "recentlyWithTime": "Недавно {time}",
+  "minutesAgo_one": "{count} минут назад",
+  "minutesAgo_other": "{count} минут назад",
+  "hoursAgo_one": "{count} час назад",
+  "hoursAgo_other": "{count} часов назад"
 }
