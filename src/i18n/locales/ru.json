@@ -75,8 +75,6 @@
   "Dashboard" : "Информационная панель",
   "never": "Никогда",
   "recentlyWithTime": "Недавно {time}",
-  "minutesAgo_one": "{count} минут назад",
-  "minutesAgo_other": "{count} минут назад",
-  "hoursAgo_one": "{count} час назад",
-  "hoursAgo_other": "{count} часов назад"
+  "minutesAgo": "{count} минуту назад | {count} минуты назад | {count} минут назад",
+  "hoursAgo": "{count} час назад | {count} часа назад | {count} часов назад"
 }

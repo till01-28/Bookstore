@@ -139,19 +139,29 @@ const searchCompany = useSearchCompanies();
 function searchCompanyInfo(searchParams) {
     const companyStore = useFetchCompanies();
 
-    if(!companyStore.getCompanies.allCompanies){
-        companyStore.getCompanies.allCompanies = [...companyStore.getCompanies.companies];
+    if(!companyStore.companyState.allCompanies){
+        companyStore.companyState.allCompanies = [...companyStore.companyState.companies];
     }
 
     if(searchParams.field === 'createdAt') {
         const query = searchParams.value.trim().toLowerCase();
+
+        if(!companyStore.companyState.allCompanies || companyStore.companyState.allCompanies.length === 0) {
+            companyStore.companyState.allCompanies = [...companyStore.companyState.companies];
+        }
+
         if(!query) {
-            companyStore.getCompanies.allCompanies = [...companyStore.getCompanies.companies];
+            companyStore.companyState.companies = [...companyStore.companyState.allCompanies];
             return;
         }
-        companyStore.getCompanies.companies = companyStore.getCompanies.allCompanies.filter((companies) => {
-            const formattedDate = formatLastActivity(companies.createdAt).toLowerCase();
-            return formattedDate.includes(query);
+        companyStore.companyState.companies = companyStore.companyState.allCompanies.filter((companies) => {
+            if (!companies || !companies.createdAt) return false;
+            try {
+                const formattedDate = formatCreationDate(companies.createdAt).toLowerCase();
+                return formattedDate.includes(query);
+            } catch (error) {
+                return false;
+            }
         });
         return;
     }
@@ -159,7 +169,7 @@ function searchCompanyInfo(searchParams) {
         .then((res) => {
             const sortedCompanies = [...res.data.member].sort((a, b) => b.id - a.id);
             companyStore.companyState.companies = sortedCompanies;
-            companyStore.getCompanies.allCompanies = sortedCompanies;
+            companyStore.companyState.allCompanies = sortedCompanies;
         })
         .catch(() => {
             console.log("ERROR, search is Failed")
@@ -201,9 +211,9 @@ function formatCreationDate(date) {
             return t('recentlyWithTime', {time});
         }
         if (minutes < 60) {
-            return `${t('minutesAgo', {count: minutes})} ${time}`;
+            return `${t('minutesAgo', minutes)} ${time}`;
         }
-        return `${t('hoursAgo', {count: hours})} ${time}`;
+        return `${t('hoursAgo', hours)} ${time}`;
     }
     return format(creationDate, 'dd MMM, yyyy HH:mm', {locale: currentLocale});
 }

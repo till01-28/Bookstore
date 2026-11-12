@@ -12,7 +12,7 @@
   "Search by email" : "Email buyicha qidirish",
   "Search by password" : "Parol buyicha qidirish",
   "Search by creation date" : "Yaratilgan sanani qidirish",
-  "Search by company name" : "Kompniya buyicha qidirish",
+  "Search by company name" : "Kompaniya buyicha qidirish",
   "Search by customer name" : "Mijoz buyicha qidirish",
   "Search by workplace" : "Kompaniya buyicha qidirish",
   "Workplace": "Kompaniya",
@@ -76,8 +76,6 @@
   "Dashboard" : "Ma'lumotlar statistikasi",
   "never": "Hechqachon",
   "recentlyWithTime": "Hozirgina {time}",
-  "minutesAgo_one": "{count} daqiqa oldin",
-  "minutesAgo_other": "{count} daqiqa oldin",
-  "hoursAgo_one": "{count} soat oldin",
-  "hoursAgo_other": "{count} soat oldin"
+  "minutesAgo": "{count} daqiqa oldin | {count} daqiqa oldin",
+  "hoursAgo": "{count} soat oldin | {count} soat oldin"
 }

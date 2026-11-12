@@ -7,6 +7,7 @@ export const useFetchCompanies = defineStore('fetchCompanies', () => {
     const companyState = reactive({
         companies: [],
         count: 0,
+        allCompanies: []
     })
 
     function getCompanies(url = '') {

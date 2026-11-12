@@ -160,13 +160,23 @@ function searchUser(searchParams) {
     }
     if(searchParams.field === 'createdAt') {
         const query = searchParams.value.trim().toLowerCase();
+
+        if(!userStore.userState.allUsers || userStore.userState.allUsers.length === 0) {
+            userStore.userState.allUsers = [...userStore.userState.users];
+        }
+
         if(!query){
             userStore.userState.users = [...userStore.userState.allUsers];
             return;
         }
-        userStore.userState.users = userStore.userState.allUsers.filter((user) => {
-            const formattedDate = formatLastActivity(user.createdAt).toLowerCase();
-            return formattedDate.includes(query);
+        userStore.userState.users = userStore.userState.allUsers.filter((users) => {
+            if (!users || !users.createdAt) return false;
+            try {
+                const formattedDate = formatCreationDate(users.createdAt).toLowerCase();
+                return formattedDate.includes(query);
+            } catch (error) {
+                return false;
+            }
         });
         return;
     }
@@ -215,9 +225,9 @@ function formatCreationDate(date) {
             return t('recentlyWithTime', {time});
         }
         if (minutes < 60) {
-            return `${t('minutesAgo', {count: minutes})} ${time}`;
+            return `${t('minutesAgo', minutes)} ${time}`;
         }
-        return `${t('hoursAgo', {count: hours})} ${time}`;
+        return `${t('hoursAgo', hours)} ${time}`;
     }
     return format(creationDate, 'dd MMM, yyyy HH:mm', {locale: currentLocale});
 }
